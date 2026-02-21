@@ -3,6 +3,47 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { MetricCategory } from "@/types/enums";
+import { calculateForecast, ForecastParameters } from "@/lib/forecast";
+
+export async function saveScenario(name: string, description: string | null, params: ForecastParameters) {
+    const session = await auth();
+    if (!session?.user?.organizationId) throw new Error("Unauthorized");
+
+    return await prisma.scenario.create({
+        data: {
+            name,
+            description,
+            parameters: JSON.stringify(params),
+            results: JSON.stringify({}), // Results can be calculated on fly or stored
+            organizationId: session.user.organizationId,
+        }
+    });
+}
+
+export async function getScenarios() {
+    const session = await auth();
+    if (!session?.user?.organizationId) throw new Error("Unauthorized");
+
+    const scenarios = await prisma.scenario.findMany({
+        where: { organizationId: session.user.organizationId },
+        orderBy: { createdAt: 'desc' }
+    });
+
+    return scenarios.map(s => ({
+        ...s,
+        parameters: JSON.parse(s.parameters) as ForecastParameters,
+        results: JSON.parse(s.results)
+    }));
+}
+
+export async function deleteScenario(id: string) {
+    const session = await auth();
+    if (!session?.user?.organizationId) throw new Error("Unauthorized");
+
+    return await prisma.scenario.delete({
+        where: { id, organizationId: session.user.organizationId }
+    });
+}
 
 export async function getDashboardMetrics(timeRange: string = "last30d") {
     const session = await auth();
