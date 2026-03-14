@@ -8,7 +8,11 @@ import {
     Activity,
     LogOut,
     ChevronRight,
-    TrendingUp
+    TrendingUp,
+    FlaskConical,
+    GitBranch,
+    BookOpen,
+    Zap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -34,6 +38,26 @@ const menuItems = [
         title: 'Forecast & Scenarios',
         href: '/dashboard/forecast',
         icon: TrendingUp,
+    },
+    {
+        title: 'Experiments',
+        href: '/dashboard/experiments',
+        icon: FlaskConical,
+    },
+    {
+        title: 'Funnels',
+        href: '/dashboard/funnels',
+        icon: GitBranch,
+    },
+    {
+        title: 'Learnings',
+        href: '/dashboard/learnings',
+        icon: BookOpen,
+    },
+    {
+        title: 'Velocity',
+        href: '/dashboard/velocity',
+        icon: Zap,
     },
 ];
 

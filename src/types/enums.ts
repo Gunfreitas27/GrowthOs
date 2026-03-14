@@ -34,3 +34,53 @@ export const DataSourceType = {
     STRIPE: "STRIPE" as const,
     CUSTOM_CSV: "CUSTOM_CSV" as const,
 };
+
+// ─── Growth OS Modules ───────────────────────────────────────────────────────
+
+export type FunnelStageType = "awareness" | "acquisition" | "activation" | "retention" | "revenue" | "referral";
+export type ExperimentStatus = "idea" | "backlog" | "in_progress" | "paused" | "completed" | "archived";
+export type ExperimentResult = "win" | "loss" | "inconclusive";
+export type LearningCategory = "copy" | "ux" | "pricing" | "onboarding" | "activation" | "retention" | "channel" | "other";
+export type LearningImpactLevel = "high" | "medium" | "low";
+export type LearningResultType = "validated" | "invalidated" | "inconclusive";
+
+export const FunnelStageType = {
+    AWARENESS: "awareness" as const,
+    ACQUISITION: "acquisition" as const,
+    ACTIVATION: "activation" as const,
+    RETENTION: "retention" as const,
+    REVENUE: "revenue" as const,
+    REFERRAL: "referral" as const,
+};
+
+export const ExperimentStatus = {
+    IDEA: "idea" as const,
+    BACKLOG: "backlog" as const,
+    IN_PROGRESS: "in_progress" as const,
+    PAUSED: "paused" as const,
+    COMPLETED: "completed" as const,
+    ARCHIVED: "archived" as const,
+};
+
+export const ExperimentResult = {
+    WIN: "win" as const,
+    LOSS: "loss" as const,
+    INCONCLUSIVE: "inconclusive" as const,
+};
+
+export const LearningCategory = {
+    COPY: "copy" as const,
+    UX: "ux" as const,
+    PRICING: "pricing" as const,
+    ONBOARDING: "onboarding" as const,
+    ACTIVATION: "activation" as const,
+    RETENTION: "retention" as const,
+    CHANNEL: "channel" as const,
+    OTHER: "other" as const,
+};
+
+export const LearningResultType = {
+    VALIDATED: "validated" as const,
+    INVALIDATED: "invalidated" as const,
+    INCONCLUSIVE: "inconclusive" as const,
+};

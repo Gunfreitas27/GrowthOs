@@ -27,8 +27,11 @@ model User {
   updatedAt      DateTime      @updatedAt
 
   // Relations
-  tickets        Ticket[] @relation("AssignedTickets")
-  createdTickets Ticket[] @relation("CreatedTickets")
+  tickets          Ticket[]         @relation("AssignedTickets")
+  createdTickets   Ticket[]         @relation("CreatedTickets")
+  ownedExperiments Experiment[]     @relation("ExperimentOwner")
+  createdLearnings Learning[]       @relation("LearningCreator")
+  createdSnapshots FunnelSnapshot[] @relation("SnapshotCreator")
 }
 
 model Account {
@@ -79,6 +82,9 @@ model Organization {
   metrics         Metric[]
   scenarios       Scenario[]
   recommendations Recommendation[]
+  experiments     Experiment[]
+  funnels         Funnel[]
+  learnings       Learning[]
 }
 
 
@@ -160,4 +166,112 @@ model Scenario {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+
+// ─── Growth OS Modules ───────────────────────────────────────────────────────
+
+// Experiment Backlog with ICE/RICE Scoring
+model Experiment {
+  id             String    @id @default(cuid())
+  title          String
+  description    String?
+  hypothesis     String?
+  funnelStage    String    @default("acquisition") // awareness|acquisition|activation|retention|revenue|referral
+  status         String    @default("idea")        // idea|backlog|in_progress|paused|completed|archived
+  priorityScore  Float?
+
+  // ICE scoring (1-10 each)
+  iceImpact      Float?
+  iceConfidence  Float?
+  iceEase        Float?
+
+  // RICE scoring
+  riceReach      Float?
+  riceImpact     Float?    // 1-3
+  riceConfidence Float?    // 0-100 (percent)
+  riceEffort     Float?    // weeks
+
+  ownerId        String?
+  owner          User?        @relation("ExperimentOwner", fields: [ownerId], references: [id])
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  startedAt      DateTime?
+  endedAt        DateTime?
+  tags           String    @default("[]") // JSON array of strings
+  relatedMetric  String?
+  expectedLift   Float?    // percent
+  actualLift     Float?    // percent
+  result         String?   // win|loss|inconclusive
+  learning       String?   // text note at conclusion
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  learnings      Learning[]
+  stageLinks     FunnelStageLink[]
+}
+
+
+// Custom Funnel Tracker
+model Funnel {
+  id             String    @id @default(cuid())
+  name           String
+  description    String?
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  stages         String    @default("[]") // JSON: [{name, order, description}]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  snapshots      FunnelSnapshot[]
+  stageLinks     FunnelStageLink[]
+}
+
+model FunnelSnapshot {
+  id           String   @id @default(cuid())
+  funnelId     String
+  funnel       Funnel   @relation(fields: [funnelId], references: [id], onDelete: Cascade)
+  snapshotDate DateTime
+  stageData    String   // JSON: [{stageName, value, unit}]
+  notes        String?
+  createdById  String?
+  createdBy    User?    @relation("SnapshotCreator", fields: [createdById], references: [id])
+  createdAt    DateTime @default(now())
+}
+
+model FunnelStageLink {
+  id           String     @id @default(cuid())
+  funnelId     String
+  funnel       Funnel     @relation(fields: [funnelId], references: [id], onDelete: Cascade)
+  experimentId String
+  experiment   Experiment @relation(fields: [experimentId], references: [id], onDelete: Cascade)
+  stageName    String
+
+  @@unique([funnelId, experimentId])
+}
+
+
+// Learning Log / Knowledge Repository
+model Learning {
+  id             String      @id @default(cuid())
+  experimentId   String?
+  experiment     Experiment? @relation(fields: [experimentId], references: [id])
+  title          String
+  summary        String
+  category       String      // copy|ux|pricing|onboarding|activation|retention|channel|other
+  funnelStage    String?
+  impactLevel    String      @default("medium") // high|medium|low
+  resultType     String      // validated|invalidated|inconclusive
+  evidence       String?
+  recommendation String?
+  tags           String      @default("[]") // JSON array
+  createdById    String?
+  createdBy      User?       @relation("LearningCreator", fields: [createdById], references: [id])
+  isPinned       Boolean     @default(false)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 }
