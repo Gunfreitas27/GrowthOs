@@ -29,8 +29,12 @@ export default async function DashboardPage() {
 
     return (
         <div className="p-8">
-            <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
-            <p className="mb-8 text-gray-500">Welcome back, {session.user.name || session.user.email}</p>
+            <div className="mb-8">
+                <h1 className="velox-heading text-3xl">Your growth at a glance.</h1>
+                <p className="text-sm mt-1" style={{ color: 'var(--velox-mist)' }}>
+                    {session.user.name || session.user.email}
+                </p>
+            </div>
             <DashboardView />
         </div>
     );

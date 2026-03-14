@@ -4,11 +4,39 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ─── Velox Design Tokens ──────────────────────────────────────────────────── */
+:root {
+  /* Brand Colors */
+  --velox-void:        #0F0E1A;
+  --velox-indigo:      #2D1B6B;
+  --velox-pulse:       #6B4FE8;
+  --velox-velocity:    #1AD3C5;
+  --velox-insight:     #F59E0B;
+  --velox-signal:      #EF4444;
+  --velox-cloud:       #F8F7FC;
+  --velox-mist:        #A8A3C7;
+
+  /* Derived tokens */
+  --velox-pulse-10:    #6B4FE81A;
+  --velox-pulse-20:    #6B4FE833;
+  --velox-velocity-10: #1AD3C51A;
+  --velox-velocity-20: #1AD3C533;
+  --velox-insight-10:  #F59E0B1A;
+  --velox-signal-10:   #EF44441A;
+  --velox-indigo-40:   #2D1B6B66;
+
+  /* Typography */
+  --font-display: var(--font-display, 'Plus Jakarta Sans', system-ui, sans-serif);
+  --font-ui:      var(--font-ui, 'Inter', system-ui, sans-serif);
+  --font-data:    var(--font-data, 'JetBrains Mono', 'Fira Code', monospace);
+}
+
+/* ─── Tailwind Theme Mapping ────────────────────────────────────────────────── */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-ui);
+  --font-mono: var(--font-data);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -45,82 +73,205 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+
+  /* Velox brand colors available as Tailwind utilities */
+  --color-velox-void:     #0F0E1A;
+  --color-velox-indigo:   #2D1B6B;
+  --color-velox-pulse:    #6B4FE8;
+  --color-velox-velocity: #1AD3C5;
+  --color-velox-insight:  #F59E0B;
+  --color-velox-signal:   #EF4444;
+  --color-velox-cloud:    #F8F7FC;
+  --color-velox-mist:     #A8A3C7;
 }
 
+/* ─── Light Mode (Velox Cloud) ──────────────────────────────────────────────── */
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --background:            #F8F7FC;
+  --foreground:            #0F0E1A;
+  --card:                  #FFFFFF;
+  --card-foreground:       #0F0E1A;
+  --popover:               #FFFFFF;
+  --popover-foreground:    #0F0E1A;
+  --primary:               #6B4FE8;
+  --primary-foreground:    #FFFFFF;
+  --secondary:             #F0EEF8;
+  --secondary-foreground:  #2D1B6B;
+  --muted:                 #F0EEF8;
+  --muted-foreground:      #6B6694;
+  --accent:                #F0EEF8;
+  --accent-foreground:     #2D1B6B;
+  --destructive:           #EF4444;
+  --border:                rgba(45, 27, 107, 0.12);
+  --input:                 rgba(45, 27, 107, 0.10);
+  --ring:                  #6B4FE8;
+  --chart-1:               #6B4FE8;
+  --chart-2:               #1AD3C5;
+  --chart-3:               #F59E0B;
+  --chart-4:               #EF4444;
+  --chart-5:               #A8A3C7;
+  --sidebar:               #FFFFFF;
+  --sidebar-foreground:    #0F0E1A;
+  --sidebar-primary:       #6B4FE8;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent:        #F0EEF8;
+  --sidebar-accent-foreground: #2D1B6B;
+  --sidebar-border:        rgba(45, 27, 107, 0.10);
+  --sidebar-ring:          #6B4FE8;
 }
 
+/* ─── Dark Mode (Velox Void — modo padrão da marca) ─────────────────────────── */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background:            #0F0E1A;
+  --foreground:            #F8F7FC;
+  --card:                  #1A182E;
+  --card-foreground:       #F8F7FC;
+  --popover:               #1A182E;
+  --popover-foreground:    #F8F7FC;
+  --primary:               #6B4FE8;
+  --primary-foreground:    #FFFFFF;
+  --secondary:             #251F3D;
+  --secondary-foreground:  #F8F7FC;
+  --muted:                 #251F3D;
+  --muted-foreground:      #A8A3C7;
+  --accent:                #251F3D;
+  --accent-foreground:     #F8F7FC;
+  --destructive:           #EF4444;
+  --border:                rgba(107, 79, 232, 0.15);
+  --input:                 rgba(107, 79, 232, 0.12);
+  --ring:                  #6B4FE8;
+  --chart-1:               #6B4FE8;
+  --chart-2:               #1AD3C5;
+  --chart-3:               #F59E0B;
+  --chart-4:               #EF4444;
+  --chart-5:               #A8A3C7;
+  --sidebar:               #13112A;
+  --sidebar-foreground:    #F8F7FC;
+  --sidebar-primary:       #6B4FE8;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent:        #1A182E;
+  --sidebar-accent-foreground: #F8F7FC;
+  --sidebar-border:        rgba(107, 79, 232, 0.15);
+  --sidebar-ring:          #6B4FE8;
 }
 
+/* ─── Base ───────────────────────────────────────────────────────────────────── */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-ui);
   }
+}
+
+/* ─── Velox Typography Classes ───────────────────────────────────────────────── */
+.velox-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.velox-heading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.velox-body {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.velox-label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.velox-data {
+  font-family: var(--font-data);
+  font-weight: 500;
+}
+
+/* ─── Velox Component Classes ────────────────────────────────────────────────── */
+
+/* Gradient button */
+.btn-velox-primary {
+  background: linear-gradient(135deg, #6B4FE8, #1AD3C5);
+  color: white;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.btn-velox-primary:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+/* Score badge base */
+.velox-score-badge {
+  font-family: var(--font-data);
+  font-weight: 500;
+  font-size: 11px;
+  background: var(--velox-pulse-10);
+  border: 1px solid var(--velox-pulse-20);
+  color: var(--velox-pulse);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+/* Result badges */
+.velox-result-win {
+  background: var(--velox-velocity-10);
+  border: 1px solid var(--velox-velocity-20);
+  color: var(--velox-velocity);
+}
+
+.velox-result-loss {
+  background: var(--velox-signal-10);
+  color: var(--velox-signal);
+}
+
+.velox-result-inconclusive {
+  background: rgba(168, 163, 199, 0.15);
+  color: var(--velox-mist);
+}
+
+/* Running experiment pulse dot */
+@keyframes velox-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.velox-dot-running {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--velox-pulse);
+  animation: velox-pulse 1.5s ease-in-out infinite;
+  display: inline-block;
+}
+
+/* KPI card accent */
+.velox-kpi-accent {
+  border-left: 3px solid var(--velox-pulse);
+}
+
+/* Gradient text for hero moments */
+.velox-gradient-text {
+  background: linear-gradient(135deg, #6B4FE8, #1AD3C5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }

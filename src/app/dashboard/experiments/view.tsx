@@ -72,12 +72,12 @@ const STATUS_NEXT: Record<string, string | null> = {
 };
 
 const STAGE_LABELS: Record<string, string> = {
-    awareness: 'Awareness',
-    acquisition: 'Acquisition',
-    activation: 'Activation',
-    retention: 'Retention',
-    revenue: 'Revenue',
-    referral: 'Referral',
+    awareness: 'Reconhecimento',
+    acquisition: 'Aquisição',
+    activation: 'Ativação',
+    retention: 'Retenção',
+    revenue: 'Receita',
+    referral: 'Indicação',
 };
 
 const STAGE_COLORS: Record<string, string> = {
@@ -89,10 +89,10 @@ const STAGE_COLORS: Record<string, string> = {
     referral: 'bg-pink-100 text-pink-700',
 };
 
-const RESULT_COLORS: Record<string, string> = {
-    win: 'bg-green-100 text-green-700',
-    loss: 'bg-red-100 text-red-700',
-    inconclusive: 'bg-gray-100 text-gray-600',
+const RESULT_STYLES: Record<string, string> = {
+    win: 'velox-result-win',
+    loss: 'velox-result-loss',
+    inconclusive: 'velox-result-inconclusive',
 };
 
 // ─── Zod schema (mirrors server schema) ──────────────────────────────────────
@@ -102,7 +102,7 @@ const formSchema = z.object({
     description: z.string().optional().nullable(),
     hypothesis: z.string().optional().nullable(),
     funnelStage: z.enum(['awareness', 'acquisition', 'activation', 'retention', 'revenue', 'referral']),
-    status: z.enum(['idea', 'backlog', 'in_progress', 'paused', 'completed', 'archived']).default('idea'),
+    status: z.enum(['idea', 'backlog', 'in_progress', 'paused', 'completed', 'archived']),
     iceImpact: z.coerce.number().min(1).max(10).optional().nullable(),
     iceConfidence: z.coerce.number().min(1).max(10).optional().nullable(),
     iceEase: z.coerce.number().min(1).max(10).optional().nullable(),
@@ -176,11 +176,19 @@ function ScoreBadge({ experiment }: { experiment: Experiment }) {
     );
     const score = experiment.priorityScore;
 
-    if (!method || score == null) return <span className="text-xs text-gray-400">— sem score</span>;
+    if (!method || score == null) {
+        return (
+            <span className="velox-data text-xs" style={{ color: 'var(--velox-mist)' }}>
+                — sem score
+            </span>
+        );
+    }
 
-    const color = method === 'RICE' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700';
     return (
-        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${color}`}>
+        <span
+            className="velox-score-badge"
+            title={`${method} Score`}
+        >
             {method} {score.toFixed(1)}
         </span>
     );
@@ -212,8 +220,8 @@ function ExperimentCard({ experiment, onEdit, onStatusChange }: {
                 <div className="flex items-center justify-between text-xs text-gray-400 mb-3">
                     <span>{experiment.owner?.name ?? 'Sem dono'}</span>
                     {experiment.result && (
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${RESULT_COLORS[experiment.result] ?? ''}`}>
-                            {experiment.result}
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium velox-data ${RESULT_STYLES[experiment.result] ?? ''}`}>
+                            {experiment.result === 'win' ? '↑ Ganhou' : experiment.result === 'loss' ? '↓ Perdeu' : '— Inconclusivo'}
                         </span>
                     )}
                 </div>
@@ -261,8 +269,9 @@ export default function ExperimentsView({ initialExperiments, users }: {
     const [filterOwner, setFilterOwner] = useState('all');
     const [saving, setSaving] = useState(false);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const form = useForm<FormValues>({
-        resolver: zodResolver(formSchema),
+        resolver: zodResolver(formSchema) as any,
         defaultValues: DEFAULT_VALUES,
     });
 
@@ -373,9 +382,20 @@ export default function ExperimentsView({ initialExperiments, users }: {
                     return (
                         <div key={col.id} className="bg-gray-50 rounded-xl p-3 min-h-[300px]">
                             <div className="flex items-center justify-between mb-3">
-                                <h3 className="font-semibold text-sm text-gray-700">{col.label}</h3>
-                                <span className="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full">{cards.length}</span>
+                                <h3 className="velox-label text-xs" style={{ color: 'var(--velox-mist)' }}>{col.label}</h3>
+                                <span
+                                    className="velox-data text-xs px-2 py-0.5 rounded-full"
+                                    style={{ background: 'var(--velox-pulse-10)', color: 'var(--velox-pulse)' }}
+                                >
+                                    {cards.length}
+                                </span>
                             </div>
+                            {cards.length === 0 && col.id === 'backlog' && experiments.length === 0 && (
+                                <div className="text-center py-8 px-2" style={{ color: 'var(--velox-mist)' }}>
+                                    <p className="velox-label text-xs mb-1">Backlog vazio</p>
+                                    <p className="text-xs leading-relaxed">Adicione uma ideia e o Velox calcula o score automaticamente.</p>
+                                </div>
+                            )}
                             {cards.map(e => (
                                 <ExperimentCard
                                     key={e.id}
@@ -454,8 +474,15 @@ export default function ExperimentsView({ initialExperiments, users }: {
                                                 <Select onValueChange={field.onChange} value={field.value}>
                                                     <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
                                                     <SelectContent>
-                                                        {['idea', 'backlog', 'in_progress', 'paused', 'completed', 'archived'].map(s => (
-                                                            <SelectItem key={s} value={s}>{s}</SelectItem>
+                                                        {([
+                                                            ['idea', 'Ideia'],
+                                                            ['backlog', 'Backlog'],
+                                                            ['in_progress', 'Em execução'],
+                                                            ['paused', 'Pausado'],
+                                                            ['completed', 'Concluído'],
+                                                            ['archived', 'Arquivado'],
+                                                        ] as const).map(([v, l]) => (
+                                                            <SelectItem key={v} value={v}>{l}</SelectItem>
                                                         ))}
                                                     </SelectContent>
                                                 </Select>
@@ -511,12 +538,12 @@ export default function ExperimentsView({ initialExperiments, users }: {
 
                                 {/* Tab: ICE Score */}
                                 <TabsContent value="ice" className="space-y-4 pt-4">
-                                    <p className="text-sm text-gray-500">ICE Score = (Impact + Confidence + Ease) / 3</p>
+                                    <p className="text-sm text-gray-500">ICE Score = (Impacto + Confiança + Facilidade) / 3</p>
                                     <div className="grid grid-cols-3 gap-4">
                                         {(['iceImpact', 'iceConfidence', 'iceEase'] as const).map((f, i) => (
                                             <FormField key={f} control={form.control} name={f} render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>{['Impact', 'Confidence', 'Ease'][i]} (1-10)</FormLabel>
+                                                    <FormLabel>{['Impacto', 'Confiança', 'Facilidade'][i]} (1-10)</FormLabel>
                                                     <FormControl>
                                                         <Input
                                                             type="number"
@@ -535,32 +562,32 @@ export default function ExperimentsView({ initialExperiments, users }: {
 
                                 {/* Tab: RICE Score */}
                                 <TabsContent value="rice" className="space-y-4 pt-4">
-                                    <p className="text-sm text-gray-500">RICE Score = (Reach × Impact × Confidence%) / Effort. Se preenchido, substitui o ICE.</p>
+                                    <p className="text-sm text-gray-500">RICE Score = (Alcance × Impacto × Confiança%) / Esforço. Se preenchido, substitui o ICE.</p>
                                     <div className="grid grid-cols-2 gap-4">
                                         <FormField control={form.control} name="riceReach" render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Reach (pessoas/semana)</FormLabel>
+                                                <FormLabel>Alcance (pessoas/semana)</FormLabel>
                                                 <FormControl><Input type="number" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? null : Number(e.target.value))} /></FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )} />
                                         <FormField control={form.control} name="riceImpact" render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Impact (1-3)</FormLabel>
+                                                <FormLabel>Impacto (1-3)</FormLabel>
                                                 <FormControl><Input type="number" min={1} max={3} {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? null : Number(e.target.value))} /></FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )} />
                                         <FormField control={form.control} name="riceConfidence" render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Confidence (0-100%)</FormLabel>
+                                                <FormLabel>Confiança (0-100%)</FormLabel>
                                                 <FormControl><Input type="number" min={0} max={100} {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? null : Number(e.target.value))} /></FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )} />
                                         <FormField control={form.control} name="riceEffort" render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Effort (semanas)</FormLabel>
+                                                <FormLabel>Esforço (semanas)</FormLabel>
                                                 <FormControl><Input type="number" min={0.1} step={0.5} {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? null : Number(e.target.value))} /></FormControl>
                                                 <FormMessage />
                                             </FormItem>
@@ -578,8 +605,8 @@ export default function ExperimentsView({ initialExperiments, users }: {
                                                     <FormControl><SelectTrigger><SelectValue placeholder="Selecionar..." /></SelectTrigger></FormControl>
                                                     <SelectContent>
                                                         <SelectItem value="none">Sem resultado</SelectItem>
-                                                        <SelectItem value="win">Win 🏆</SelectItem>
-                                                        <SelectItem value="loss">Loss</SelectItem>
+                                                        <SelectItem value="win">Ganhou 🏆</SelectItem>
+                                                        <SelectItem value="loss">Perdeu</SelectItem>
                                                         <SelectItem value="inconclusive">Inconclusivo</SelectItem>
                                                     </SelectContent>
                                                 </Select>

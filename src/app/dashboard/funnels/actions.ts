@@ -105,8 +105,8 @@ export async function deleteFunnel(id: string) {
     const session = await auth();
     if (!session?.user?.organizationId) throw new Error('Unauthorized');
 
-    await prisma.funnel.delete({
-        where: { id, organizationId: session.user.organizationId } as Record<string, unknown>,
+    await prisma.funnel.deleteMany({
+        where: { id, organizationId: session.user.organizationId },
     });
 
     revalidatePath('/dashboard/funnels');

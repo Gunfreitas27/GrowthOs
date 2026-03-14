@@ -21,13 +21,13 @@ export default function ForecastView() {
         revenueUplift: 0,
     });
     const [forecastData, setForecastData] = useState<ForecastResult[]>([]);
-    const [scenarioName, setScenarioName] = useState("New Scenario");
+    const [scenarioName, setScenarioName] = useState("Novo Cenário");
 
     useEffect(() => {
         getDashboardMetrics().then(data => {
             const base: Record<MetricCategory, number> = {
                 [MetricCategory.ACQUISITION]: data.acquisition.value,
-                [MetricCategory.ACTIVATION]: data.activation.value, // Note: simplifying for MVP
+                [MetricCategory.ACTIVATION]: data.activation.value,
                 [MetricCategory.RETENTION]: data.retention.value,
                 [MetricCategory.REFERRAL]: data.referral.value,
                 [MetricCategory.REVENUE]: data.revenue.value,
@@ -46,48 +46,48 @@ export default function ForecastView() {
 
     const handleSave = async () => {
         try {
-            await saveScenario(scenarioName, "Simulated scenario", params);
-            alert("Scenario saved successfully!");
+            await saveScenario(scenarioName, "Cenário simulado", params);
+            alert("Cenário salvo com sucesso!");
         } catch (e) {
-            alert("Failed to save scenario");
+            alert("Erro ao salvar cenário");
         }
     };
 
-    if (loading) return <div>Loading forecast tools...</div>;
+    if (loading) return <div>Carregando simulador...</div>;
 
-    const formatCurrency = (val: number) => `$${val.toLocaleString()}`;
+    const formatCurrency = (val: number) => `R$${val.toLocaleString('pt-BR')}`;
 
     return (
         <div className="grid gap-6 md:grid-cols-12">
-            {/* Controls Sidebar */}
+            {/* Painel de Controles */}
             <Card className="md:col-span-4">
                 <CardHeader>
-                    <CardTitle>Simulation Parameters</CardTitle>
-                    <CardDescription>Adjust uplifts to see projected impact</CardDescription>
+                    <CardTitle>Parâmetros de Simulação</CardTitle>
+                    <CardDescription>Ajuste os uplifts para ver o impacto projetado</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <UpliftControl
-                        label="Acquisition Uplift"
+                        label="Uplift de Aquisição"
                         value={params.acquisitionUplift}
                         onChange={(v) => setParams({ ...params, acquisitionUplift: v })}
                     />
                     <UpliftControl
-                        label="Activation Uplift"
+                        label="Uplift de Ativação"
                         value={params.activationUplift}
                         onChange={(v) => setParams({ ...params, activationUplift: v })}
                     />
                     <UpliftControl
-                        label="Retention Uplift"
+                        label="Uplift de Retenção"
                         value={params.retentionUplift}
                         onChange={(v) => setParams({ ...params, retentionUplift: v })}
                     />
                     <UpliftControl
-                        label="Referral Uplift"
+                        label="Uplift de Indicação"
                         value={params.referralUplift}
                         onChange={(v) => setParams({ ...params, referralUplift: v })}
                     />
                     <UpliftControl
-                        label="Revenue Uplift"
+                        label="Uplift de Receita"
                         value={params.revenueUplift}
                         onChange={(v) => setParams({ ...params, revenueUplift: v })}
                     />
@@ -99,31 +99,31 @@ export default function ForecastView() {
                             className="w-full p-2 border rounded text-sm"
                             value={scenarioName}
                             onChange={(e) => setScenarioName(e.target.value)}
-                            placeholder="Scenario name..."
+                            placeholder="Nome do cenário..."
                         />
-                        <Button className="w-full" onClick={handleSave}>Save Scenario</Button>
+                        <Button className="w-full" onClick={handleSave}>Salvar Cenário</Button>
                     </div>
                 </CardContent>
             </Card>
 
-            {/* Projection Chart */}
+            {/* Gráfico de Projeção */}
             <Card className="md:col-span-8">
                 <CardHeader>
-                    <CardTitle>Revenue Forecast (12 Months)</CardTitle>
-                    <CardDescription>Projected monthly revenue based on combined uplifts</CardDescription>
+                    <CardTitle>Previsão de Receita (12 Meses)</CardTitle>
+                    <CardDescription>Receita mensal projetada com base nos uplifts combinados</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="h-[400px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={forecastData}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                                <XAxis dataKey="month" label={{ value: 'Month', position: 'insideBottom', offset: -5 }} />
+                                <XAxis dataKey="month" label={{ value: 'Mês', position: 'insideBottom', offset: -5 }} />
                                 <YAxis tickFormatter={formatCurrency} />
                                 <Tooltip formatter={(value: any) => formatCurrency(value)} />
                                 <Line
                                     type="monotone"
                                     dataKey="totalRevenue"
-                                    stroke="#adfa1d"
+                                    stroke="#6B4FE8"
                                     strokeWidth={3}
                                     dot={{ r: 4 }}
                                     activeDot={{ r: 6 }}

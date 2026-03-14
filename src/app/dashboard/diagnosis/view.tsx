@@ -5,6 +5,25 @@ import { runDiagnosis } from "./actions";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
+const HEALTH_LABELS: Record<string, string> = {
+    HEALTHY: 'Saudável',
+    WARNING: 'Atenção',
+    CRITICAL: 'Crítico',
+};
+
+const SEVERITY_LABELS: Record<string, string> = {
+    CRITICAL: 'Crítico',
+    HIGH: 'Alto',
+    MEDIUM: 'Médio',
+    LOW: 'Baixo',
+};
+
+const IMPACT_LABELS: Record<string, string> = {
+    HIGH: 'Alto',
+    MEDIUM: 'Médio',
+    LOW: 'Baixo',
+};
+
 export default function DiagnosisView() {
     const [diagnosis, setDiagnosis] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -25,8 +44,8 @@ export default function DiagnosisView() {
         loadDiagnosis();
     }, []);
 
-    if (loading) return <div>Running diagnosis...</div>;
-    if (!diagnosis) return <div>No diagnosis available</div>;
+    if (loading) return <div>Executando diagnóstico...</div>;
+    if (!diagnosis) return <div>Nenhum diagnóstico disponível</div>;
 
     const healthColors = {
         HEALTHY: "bg-green-100 text-green-800 border-green-300",
@@ -43,25 +62,25 @@ export default function DiagnosisView() {
 
     return (
         <div className="space-y-8">
-            {/* Overall Health */}
+            {/* Saúde Geral */}
             <Card className={`border-2 ${healthColors[diagnosis.overallHealth as keyof typeof healthColors]}`}>
                 <CardHeader>
-                    <CardTitle>Funnel Health: {diagnosis.overallHealth}</CardTitle>
+                    <CardTitle>Saúde do Funil: {HEALTH_LABELS[diagnosis.overallHealth] ?? diagnosis.overallHealth}</CardTitle>
                     <CardDescription>
-                        Analyzed {diagnosis.bottlenecks.length} stage(s) with issues
+                        {diagnosis.bottlenecks.length} etapa{diagnosis.bottlenecks.length !== 1 ? 's' : ''} com problemas identificada{diagnosis.bottlenecks.length !== 1 ? 's' : ''}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Button onClick={loadDiagnosis} variant="outline" size="sm">
-                        Re-run Diagnosis
+                        Rediagnosticar
                     </Button>
                 </CardContent>
             </Card>
 
-            {/* Bottlenecks */}
+            {/* Gargalos */}
             {diagnosis.bottlenecks.length > 0 && (
                 <div>
-                    <h2 className="text-2xl font-bold mb-4">Detected Bottlenecks</h2>
+                    <h2 className="text-2xl font-bold mb-4">Gargalos Detectados</h2>
                     <div className="grid gap-4 md:grid-cols-2">
                         {diagnosis.bottlenecks.map((b: any, i: number) => (
                             <Card key={i} className="border-l-4" style={{ borderLeftColor: severityColors[b.severity as keyof typeof severityColors].replace('bg-', '#') }}>
@@ -69,16 +88,16 @@ export default function DiagnosisView() {
                                     <div className="flex items-center justify-between">
                                         <CardTitle className="text-lg">{b.stage}</CardTitle>
                                         <span className={`px-2 py-1 rounded text-xs font-semibold text-white ${severityColors[b.severity as keyof typeof severityColors]}`}>
-                                            {b.severity}
+                                            {SEVERITY_LABELS[b.severity] ?? b.severity}
                                         </span>
                                     </div>
                                     <CardDescription>
-                                        {b.dropPercentage.toFixed(1)}% below expected performance
+                                        {b.dropPercentage.toFixed(1)}% abaixo do desempenho esperado
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     <div>
-                                        <h4 className="font-semibold text-sm mb-2">Evidence:</h4>
+                                        <h4 className="font-semibold text-sm mb-2">Evidências:</h4>
                                         <ul className="text-sm text-gray-600 space-y-1">
                                             {b.evidence.map((e: string, j: number) => (
                                                 <li key={j}>• {e}</li>
@@ -86,7 +105,7 @@ export default function DiagnosisView() {
                                         </ul>
                                     </div>
                                     <div>
-                                        <h4 className="font-semibold text-sm mb-2">Probable Causes:</h4>
+                                        <h4 className="font-semibold text-sm mb-2">Prováveis Causas:</h4>
                                         <ul className="text-sm text-gray-600 space-y-1">
                                             {b.probableCauses.map((c: string, j: number) => (
                                                 <li key={j}>• {c}</li>
@@ -100,10 +119,10 @@ export default function DiagnosisView() {
                 </div>
             )}
 
-            {/* Recommendations */}
+            {/* Recomendações */}
             {diagnosis.recommendations.length > 0 && (
                 <div>
-                    <h2 className="text-2xl font-bold mb-4">Recommended Actions</h2>
+                    <h2 className="text-2xl font-bold mb-4">Ações Recomendadas</h2>
                     <div className="space-y-4">
                         {diagnosis.recommendations.map((r: any, i: number) => (
                             <Card key={i}>
@@ -115,17 +134,17 @@ export default function DiagnosisView() {
                                                     r.impact === 'MEDIUM' ? 'bg-yellow-100 text-yellow-800' :
                                                         'bg-blue-100 text-blue-800'
                                                 }`}>
-                                                Impact: {r.impact}
+                                                Impacto: {IMPACT_LABELS[r.impact] ?? r.impact}
                                             </span>
                                             <span className={`px-2 py-1 rounded text-xs font-semibold ${r.effort === 'HIGH' ? 'bg-purple-100 text-purple-800' :
                                                     r.effort === 'MEDIUM' ? 'bg-indigo-100 text-indigo-800' :
                                                         'bg-green-100 text-green-800'
                                                 }`}>
-                                                Effort: {r.effort}
+                                                Esforço: {IMPACT_LABELS[r.effort] ?? r.effort}
                                             </span>
                                         </div>
                                     </div>
-                                    <CardDescription>Stage: {r.stage}</CardDescription>
+                                    <CardDescription>Etapa: {r.stage}</CardDescription>
                                 </CardHeader>
                                 <CardContent>
                                     <p className="text-sm text-gray-700">{r.description}</p>
@@ -139,8 +158,8 @@ export default function DiagnosisView() {
             {diagnosis.bottlenecks.length === 0 && (
                 <Card className="bg-green-50 border-green-200">
                     <CardHeader>
-                        <CardTitle className="text-green-800">🎉 No Issues Detected</CardTitle>
-                        <CardDescription>Your funnel is performing well across all stages!</CardDescription>
+                        <CardTitle className="text-green-800">🎉 Nenhum Problema Detectado</CardTitle>
+                        <CardDescription>Seu funil está funcionando bem em todas as etapas!</CardDescription>
                     </CardHeader>
                 </Card>
             )}

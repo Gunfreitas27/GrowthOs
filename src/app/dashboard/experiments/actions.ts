@@ -171,8 +171,8 @@ export async function deleteExperiment(id: string) {
     const session = await auth();
     if (!session?.user?.organizationId) throw new Error('Unauthorized');
 
-    await prisma.experiment.update({
-        where: { id, organizationId: session.user.organizationId } as Record<string, unknown>,
+    await prisma.experiment.updateMany({
+        where: { id, organizationId: session.user.organizationId },
         data: { status: 'archived' },
     });
 
