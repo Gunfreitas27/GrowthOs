@@ -1,7 +1,8 @@
 'use client'
 
 import { authenticate } from '@/lib/actions'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useActionState } from 'react'
+import { useFormStatus } from 'react-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -12,41 +13,36 @@ function LoginButton() {
     const { pending } = useFormStatus()
     return (
         <Button type="submit" className="w-full" disabled={pending}>
-            {pending ? 'Logging in...' : 'Sign in'}
+            {pending ? 'Entrando...' : 'Entrar'}
         </Button>
     )
 }
 
 export default function LoginPage() {
-    const [errorMessage, dispatch] = useFormState(authenticate, undefined)
+    const [errorMessage, dispatch] = useActionState(authenticate, undefined)
 
     return (
         <Card>
             <CardHeader>
-                <CardTitle className="text-2xl">Login</CardTitle>
+                <CardTitle className="text-2xl">Entrar</CardTitle>
                 <CardDescription>
-                    Enter your email below to login to your account
+                    Insira seu e-mail e senha para acessar sua conta
                 </CardDescription>
             </CardHeader>
             <CardContent>
                 <form action={dispatch} className="grid gap-4">
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="email">E-mail</Label>
                         <Input
                             id="email"
                             type="email"
                             name="email"
-                            placeholder="m@example.com"
+                            placeholder="nome@empresa.com"
                             required
                         />
                     </div>
                     <div className="grid gap-2">
-                        <div className="flex items-center">
-                            <Label htmlFor="password">Password</Label>
-                            <Link href="#" className="ml-auto inline-block text-sm underline">
-                                Forgot your password?
-                            </Link>
-                        </div>
+                        <Label htmlFor="password">Senha</Label>
                         <Input id="password" type="password" name="password" required />
                     </div>
                     {errorMessage && (
@@ -58,10 +54,10 @@ export default function LoginPage() {
                 </form>
             </CardContent>
             <CardFooter>
-                <div className="mt-4 text-center text-sm">
-                    Don&apos;t have an account?{" "}
+                <div className="mt-4 text-center text-sm w-full">
+                    Não tem uma conta?{" "}
                     <Link href="/signup" className="underline">
-                        Sign up
+                        Cadastre-se
                     </Link>
                 </div>
             </CardFooter>

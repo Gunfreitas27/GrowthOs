@@ -12,25 +12,24 @@ export async function authenticate(
     formData: FormData,
 ) {
     try {
-        // Handling credentials login
         await signIn('credentials', formData)
     } catch (error) {
         if (error instanceof AuthError) {
             switch (error.type) {
                 case 'CredentialsSignin':
-                    return 'Invalid credentials.'
+                    return 'E-mail ou senha incorretos.'
                 default:
-                    return 'Something went wrong.'
+                    return 'Ocorreu um erro. Tente novamente.'
             }
         }
-        throw error // Re-throw to handle redirect
+        throw error
     }
 }
 
 const SignupSchema = z.object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
+    name: z.string().min(2, "O nome deve ter pelo menos 2 caracteres"),
+    email: z.string().email("E-mail inválido"),
+    password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
 });
 
 export async function registerUser(
@@ -54,7 +53,7 @@ export async function registerUser(
         });
 
         if (existingUser) {
-            return "User with this email already exists.";
+            return "Já existe uma conta com este e-mail.";
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -70,7 +69,7 @@ export async function registerUser(
 
     } catch (error) {
         console.error("Signup error:", error);
-        return "Failed to create account. Please try again.";
+        return "Erro ao criar conta. Tente novamente.";
     }
 
     // After success, we can either redirect to login or sign in directly
@@ -79,7 +78,7 @@ export async function registerUser(
         await signIn('credentials', formData);
     } catch (error) {
         if (error instanceof AuthError) {
-            return "Account created, but failed to log in automatically. Please log in manually.";
+            return "Conta criada! Faça login para continuar.";
         }
         throw error;
     }
