@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: growthos
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: node .next/standalone/server.js
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: AUTH_SECRET
+        sync: false
+      - key: NEXTAUTH_URL
+        sync: false
+      - key: NODE_ENV
+        value: production
+    healthCheckPath: /
