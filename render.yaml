@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     buildCommand: npm install && npm run build && cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public
-    startCommand: node .next/standalone/server.js
+    startCommand: npx prisma migrate deploy && node .next/standalone/server.js
     envVars:
       - key: DATABASE_URL
         sync: false
