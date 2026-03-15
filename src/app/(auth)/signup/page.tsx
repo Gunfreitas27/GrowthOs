@@ -1,81 +1,188 @@
 'use client'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import Link from 'next/link'
 import { registerUser } from '@/lib/actions'
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
+import { Input } from '@/components/ui/input'
+import Link from 'next/link'
 
-export default function SignupPage() {
-    const [errorMessage, dispatch] = useActionState(registerUser, undefined);
+/* ─── Estilos compartilhados ─────────────────────────────────────────────── */
 
+const labelStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-ui)',
+    fontSize: '11px',
+    fontWeight: 500,
+    letterSpacing: '0.07em',
+    textTransform: 'uppercase',
+    color: 'var(--velox-mist)',
+    display: 'block',
+    marginBottom: '8px',
+}
+
+const inputStyle: React.CSSProperties = {
+    background: 'rgba(107,79,232,0.07)',
+    border: '1px solid rgba(107,79,232,0.22)',
+    borderRadius: '8px',
+    color: '#F8F7FC',
+    fontFamily: 'var(--font-ui)',
+    fontSize: '14px',
+    transition: 'border-color 0.15s ease',
+}
+
+/* ─── Botão de submit ─────────────────────────────────────────────────────── */
+
+function SubmitButton() {
+    const { pending } = useFormStatus()
     return (
-        <Card className="w-full max-w-md mx-auto">
-            <CardHeader>
-                <CardTitle className="text-2xl font-bold">Criar conta</CardTitle>
-                <CardDescription>
-                    Crie sua conta para começar a usar o Velox
-                </CardDescription>
-            </CardHeader>
-            <form action={dispatch}>
-                <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="name">Nome completo</Label>
-                        <Input
-                            id="name"
-                            name="name"
-                            placeholder="João Silva"
-                            required
-                            minLength={2}
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="email">E-mail</Label>
-                        <Input
-                            id="email"
-                            name="email"
-                            type="email"
-                            placeholder="nome@empresa.com"
-                            required
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="password">Senha</Label>
-                        <Input
-                            id="password"
-                            name="password"
-                            type="password"
-                            required
-                            minLength={6}
-                        />
-                    </div>
-                    {errorMessage && (
-                        <p className="text-sm text-red-500 font-medium">{errorMessage}</p>
-                    )}
-                </CardContent>
-                <CardFooter className="flex flex-col space-y-4">
-                    <SubmitButton />
-                    <p className="text-sm text-center text-gray-500">
-                        Já tem uma conta?{' '}
-                        <Link href="/login" className="text-primary hover:underline font-medium">
-                            Entrar
-                        </Link>
-                    </p>
-                </CardFooter>
-            </form>
-        </Card>
+        <button
+            type="submit"
+            disabled={pending}
+            style={{
+                width: '100%',
+                background: pending
+                    ? 'rgba(107,79,232,0.5)'
+                    : 'linear-gradient(135deg, #6B4FE8 0%, #1AD3C5 100%)',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '13px 20px',
+                fontFamily: 'var(--font-ui)',
+                fontWeight: 600,
+                fontSize: '14px',
+                letterSpacing: '-0.01em',
+                color: '#F8F7FC',
+                cursor: pending ? 'not-allowed' : 'pointer',
+                transition: 'opacity 0.15s ease',
+                marginTop: '4px',
+            }}
+        >
+            {pending ? 'Criando conta...' : 'Criar conta →'}
+        </button>
     )
 }
 
-function SubmitButton() {
-    const { pending } = useFormStatus();
+/* ─── Página ──────────────────────────────────────────────────────────────── */
+
+export default function SignupPage() {
+    const [errorMessage, dispatch] = useActionState(registerUser, undefined)
 
     return (
-        <Button className="w-full" type="submit" disabled={pending}>
-            {pending ? "Criando conta..." : "Criar conta"}
-        </Button>
+        <div
+            style={{
+                background: 'rgba(26,24,46,0.75)',
+                border: '1px solid rgba(107,79,232,0.2)',
+                borderRadius: '16px',
+                padding: '40px',
+                backdropFilter: 'blur(18px)',
+                WebkitBackdropFilter: 'blur(18px)',
+                boxShadow: '0 24px 64px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)',
+            }}
+        >
+            {/* Header */}
+            <div style={{ marginBottom: '32px' }}>
+                <h1
+                    style={{
+                        fontFamily: 'var(--font-display)',
+                        fontWeight: 800,
+                        fontSize: '26px',
+                        letterSpacing: '-0.03em',
+                        color: '#F8F7FC',
+                        marginBottom: '8px',
+                    }}
+                >
+                    Crie sua conta
+                </h1>
+                <p style={{ fontFamily: 'var(--font-ui)', fontSize: '14px', color: 'var(--velox-mist)' }}>
+                    Comece a usar o Velox gratuitamente hoje
+                </p>
+            </div>
+
+            {/* Form */}
+            <form action={dispatch} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div>
+                    <label htmlFor="name" style={labelStyle}>Nome completo</label>
+                    <Input
+                        id="name"
+                        name="name"
+                        placeholder="João Silva"
+                        required
+                        minLength={2}
+                        style={inputStyle}
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="email" style={labelStyle}>E-mail</label>
+                    <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="nome@empresa.com"
+                        required
+                        style={inputStyle}
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="password" style={labelStyle}>Senha</label>
+                    <Input
+                        id="password"
+                        name="password"
+                        type="password"
+                        required
+                        minLength={6}
+                        style={inputStyle}
+                    />
+                    <p
+                        style={{
+                            fontFamily: 'var(--font-ui)',
+                            fontSize: '11px',
+                            color: 'rgba(168,163,199,0.6)',
+                            marginTop: '6px',
+                        }}
+                    >
+                        Mínimo de 6 caracteres
+                    </p>
+                </div>
+
+                {errorMessage && (
+                    <div
+                        style={{
+                            background: 'rgba(239,68,68,0.1)',
+                            border: '1px solid rgba(239,68,68,0.3)',
+                            borderRadius: '8px',
+                            padding: '10px 14px',
+                            fontFamily: 'var(--font-ui)',
+                            fontSize: '13px',
+                            color: '#EF4444',
+                        }}
+                    >
+                        {errorMessage}
+                    </div>
+                )}
+
+                <SubmitButton />
+            </form>
+
+            {/* Rodapé do card */}
+            <div
+                style={{
+                    marginTop: '28px',
+                    paddingTop: '24px',
+                    borderTop: '1px solid rgba(107,79,232,0.12)',
+                    textAlign: 'center',
+                    fontFamily: 'var(--font-ui)',
+                    fontSize: '13px',
+                    color: 'var(--velox-mist)',
+                }}
+            >
+                Já tem uma conta?{' '}
+                <Link
+                    href="/login"
+                    style={{ color: 'var(--velox-velocity)', textDecoration: 'none', fontWeight: 600 }}
+                >
+                    Entrar
+                </Link>
+            </div>
+        </div>
     )
 }

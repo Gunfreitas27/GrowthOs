@@ -6,7 +6,7 @@ export default function DashboardLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="flex min-h-screen bg-white">
+        <div className="flex min-h-screen" style={{ background: 'var(--velox-void)' }}>
             <Sidebar />
             <main className="flex-1 h-screen overflow-y-auto scroll-smooth">
                 {children}
