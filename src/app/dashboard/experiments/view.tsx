@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Plus, Pencil, ChevronRight, X } from 'lucide-react';
+import { Plus, Pencil, ChevronRight, X, TrendingUp, Target, Zap } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -337,8 +337,48 @@ export default function ExperimentsView({ initialExperiments, users }: {
         setIsDialogOpen(true);
     }
 
+    // Derived stats
+    const completed = experiments.filter(e => e.status === 'completed');
+    const wins = completed.filter(e => e.result === 'win');
+    const inProgress = experiments.filter(e => e.status === 'in_progress');
+    const winRate = completed.length > 0 ? Math.round((wins.length / completed.length) * 100) : null;
+
     return (
         <div>
+            {/* Stats bar */}
+            {experiments.length > 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                    <div className="flex items-center gap-3 p-3 rounded-xl border" style={{ borderColor: 'rgba(107, 79, 232, 0.15)', background: 'rgba(107, 79, 232, 0.04)' }}>
+                        <Zap className="w-4 h-4 shrink-0" style={{ color: 'var(--velox-pulse)' }} />
+                        <div>
+                            <p className="velox-data text-lg font-bold">{inProgress.length}</p>
+                            <p className="text-xs" style={{ color: 'var(--velox-mist)' }}>Em andamento</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 rounded-xl border" style={{ borderColor: 'rgba(26, 211, 197, 0.2)', background: 'rgba(26, 211, 197, 0.04)' }}>
+                        <TrendingUp className="w-4 h-4 shrink-0" style={{ color: 'var(--velox-velocity)' }} />
+                        <div>
+                            <p className="velox-data text-lg font-bold">{wins.length}</p>
+                            <p className="text-xs" style={{ color: 'var(--velox-mist)' }}>Ganhos totais</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 rounded-xl border" style={{ borderColor: 'rgba(107, 79, 232, 0.15)', background: 'rgba(107, 79, 232, 0.04)' }}>
+                        <Target className="w-4 h-4 shrink-0" style={{ color: 'var(--velox-insight)' }} />
+                        <div>
+                            <p className="velox-data text-lg font-bold">{winRate !== null ? `${winRate}%` : '—'}</p>
+                            <p className="text-xs" style={{ color: 'var(--velox-mist)' }}>Taxa de sucesso</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 rounded-xl border" style={{ borderColor: 'rgba(107, 79, 232, 0.15)', background: 'rgba(107, 79, 232, 0.04)' }}>
+                        <Plus className="w-4 h-4 shrink-0" style={{ color: 'var(--velox-mist)' }} />
+                        <div>
+                            <p className="velox-data text-lg font-bold">{experiments.filter(e => e.status === 'idea' || e.status === 'backlog').length}</p>
+                            <p className="text-xs" style={{ color: 'var(--velox-mist)' }}>No backlog</p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Filters bar */}
             <div className="flex flex-wrap items-center gap-3 mb-6">
                 <Select value={filterStage} onValueChange={setFilterStage}>

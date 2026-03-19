@@ -4,6 +4,22 @@ import { useEffect, useState } from "react";
 import { runDiagnosis } from "./actions";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { FlaskConical } from "lucide-react";
+
+// Maps AARRR stage names from diagnosis to experiment funnel stage values
+const STAGE_TO_FUNNEL: Record<string, string> = {
+    ACQUISITION: 'acquisition',
+    ACTIVATION: 'activation',
+    RETENTION: 'retention',
+    REFERRAL: 'referral',
+    REVENUE: 'revenue',
+    Acquisition: 'acquisition',
+    Activation: 'activation',
+    Retention: 'retention',
+    Referral: 'referral',
+    Revenue: 'revenue',
+};
 
 const HEALTH_LABELS: Record<string, string> = {
     HEALTHY: 'Saudável',
@@ -146,8 +162,18 @@ export default function DiagnosisView() {
                                     </div>
                                     <CardDescription>Etapa: {r.stage}</CardDescription>
                                 </CardHeader>
-                                <CardContent>
+                                <CardContent className="space-y-3">
                                     <p className="text-sm text-gray-700">{r.description}</p>
+                                    <div className="pt-1">
+                                        <Link
+                                            href={`/dashboard/experiments?stage=${STAGE_TO_FUNNEL[r.stage] ?? 'acquisition'}&from=diagnosis`}
+                                            className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors hover:opacity-80"
+                                            style={{ background: 'rgba(107, 79, 232, 0.1)', color: 'var(--velox-pulse)' }}
+                                        >
+                                            <FlaskConical className="w-3 h-3" />
+                                            Criar experimento para este problema
+                                        </Link>
+                                    </div>
                                 </CardContent>
                             </Card>
                         ))}

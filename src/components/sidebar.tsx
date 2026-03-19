@@ -12,10 +12,12 @@ import {
     GitBranch,
     BookOpen,
     Zap,
+    Settings,
+    User,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 
 const menuItems = [
     {
@@ -89,8 +91,17 @@ function VeloxMark({ className }: { className?: string }) {
     );
 }
 
+function UserInitials({ name }: { name: string }) {
+    const parts = name.trim().split(' ');
+    const initials = parts.length >= 2
+        ? `${parts[0][0]}${parts[parts.length - 1][0]}`
+        : parts[0].slice(0, 2);
+    return <>{initials.toUpperCase()}</>;
+}
+
 export default function Sidebar() {
     const pathname = usePathname();
+    const { data: session } = useSession();
 
     return (
         <aside
@@ -159,23 +170,63 @@ export default function Sidebar() {
                         </Link>
                     );
                 })}
+
+                {/* Settings separator */}
+                <div className="pt-2 mt-2" style={{ borderTop: '1px solid rgba(107, 79, 232, 0.12)' }}>
+                    <Link
+                        href="/dashboard/settings"
+                        className={cn(
+                            'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all',
+                            pathname === '/dashboard/settings'
+                                ? 'text-white'
+                                : 'text-[#A8A3C7] hover:text-white',
+                        )}
+                        style={
+                            pathname === '/dashboard/settings'
+                                ? {
+                                    background: 'rgba(107, 79, 232, 0.18)',
+                                    borderLeft: '3px solid #6B4FE8',
+                                    paddingLeft: '9px',
+                                }
+                                : {
+                                    borderLeft: '3px solid transparent',
+                                }
+                        }
+                    >
+                        <Settings
+                            className="w-4 h-4 shrink-0"
+                            style={{ color: pathname === '/dashboard/settings' ? 'var(--velox-pulse)' : undefined }}
+                        />
+                        Configurações
+                    </Link>
+                </div>
             </nav>
 
-            {/* Tagline + Logout */}
+            {/* User + Logout */}
             <div
                 className="p-4 border-t space-y-3"
                 style={{ borderColor: 'rgba(107, 79, 232, 0.15)' }}
             >
-                <p
-                    className="text-center text-xs"
-                    style={{
-                        fontFamily: 'var(--font-ui)',
-                        color: 'rgba(168, 163, 199, 0.5)',
-                        letterSpacing: '0.04em',
-                    }}
-                >
-                    Cresça com método. Não com caos.
-                </p>
+                {/* User info */}
+                <div className="flex items-center gap-2.5">
+                    <div
+                        className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+                        style={{ background: 'rgba(107, 79, 232, 0.35)', color: 'var(--velox-pulse)' }}
+                    >
+                        {session?.user?.name
+                            ? <UserInitials name={session.user.name} />
+                            : <User className="w-3.5 h-3.5" />}
+                    </div>
+                    <div className="min-w-0">
+                        <p className="text-xs font-medium truncate" style={{ color: '#F8F7FC' }}>
+                            {session?.user?.name ?? 'Usuário'}
+                        </p>
+                        <p className="text-xs truncate" style={{ color: 'rgba(168, 163, 199, 0.5)' }}>
+                            {session?.user?.email ?? ''}
+                        </p>
+                    </div>
+                </div>
+
                 <Button
                     variant="ghost"
                     className="w-full justify-start gap-3 text-sm transition-colors"

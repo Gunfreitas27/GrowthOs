@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import DashboardView from "./view";
+import { getTeamSummary } from "./actions";
 
 export default async function DashboardPage() {
     const session = await auth();
@@ -10,13 +11,7 @@ export default async function DashboardPage() {
         redirect("/login");
     }
 
-    // Check if user has an organization
-    // The session might be stale, so fetch from DB or trust session if configured correctly
-    // We added callback to session, so session.user.organizationId should be there
-    // But if it's null, we check DB to be sure or redirect
-
     if (!session.user.organizationId) {
-        // Double check DB
         const user = await prisma.user.findUnique({
             where: { id: session.user.id },
             include: { organization: true }
@@ -27,6 +22,8 @@ export default async function DashboardPage() {
         }
     }
 
+    const teamSummary = await getTeamSummary();
+
     return (
         <div className="p-8">
             <div className="mb-8">
@@ -35,7 +32,7 @@ export default async function DashboardPage() {
                     {session.user.name || session.user.email}
                 </p>
             </div>
-            <DashboardView />
+            <DashboardView teamSummary={teamSummary} />
         </div>
     );
 }

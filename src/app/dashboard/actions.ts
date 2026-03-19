@@ -5,6 +5,80 @@ import { prisma } from "@/lib/prisma";
 import { MetricCategory } from "@/types/enums";
 import { calculateForecast, ForecastParameters } from "@/lib/forecast";
 
+export async function getTeamSummary() {
+    const session = await auth();
+    if (!session?.user?.organizationId) throw new Error("Unauthorized");
+    const orgId = session.user.organizationId;
+
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now);
+    thirtyDaysAgo.setDate(now.getDate() - 30);
+    const sevenDaysAgo = new Date(now);
+    sevenDaysAgo.setDate(now.getDate() - 7);
+
+    type ExpRow = {
+        id: string; title: string; status: string; result: string | null;
+        funnelStage: string; updatedAt: Date; endedAt: Date | null;
+        owner: { name: string | null } | null;
+    };
+    type LearningRow = {
+        id: string; title: string; resultType: string; impactLevel: string;
+    };
+
+    const [experimentsRaw, learningsRaw] = await Promise.all([
+        prisma.experiment.findMany({
+            where: { organizationId: orgId },
+            select: {
+                id: true, title: true, status: true, result: true,
+                funnelStage: true, updatedAt: true, endedAt: true,
+                owner: { select: { name: true } },
+            },
+        }),
+        prisma.learning.findMany({
+            where: { organizationId: orgId, createdAt: { gte: sevenDaysAgo } },
+            select: { id: true, title: true, resultType: true, impactLevel: true },
+            orderBy: { createdAt: 'desc' },
+            take: 3,
+        }),
+    ]);
+
+    const experiments = experimentsRaw as ExpRow[];
+    const recentLearnings = learningsRaw as LearningRow[];
+
+    const inProgress = experiments.filter((e: ExpRow) => e.status === 'in_progress');
+    const completed = experiments.filter((e: ExpRow) => e.status === 'completed');
+    const completedThisMonth = completed.filter(
+        (e: ExpRow) => e.endedAt && new Date(e.endedAt) >= thirtyDaysAgo,
+    );
+    const winsThisMonth = completedThisMonth.filter((e: ExpRow) => e.result === 'win');
+    const stale = inProgress.filter((e: ExpRow) => new Date(e.updatedAt) < thirtyDaysAgo);
+
+    return {
+        activeExperiments: inProgress.length,
+        completedThisMonth: completedThisMonth.length,
+        winsThisMonth: winsThisMonth.length,
+        staleCount: stale.length,
+        backlogCount: experiments.filter((e: ExpRow) => e.status === 'backlog').length,
+        ideasCount: experiments.filter((e: ExpRow) => e.status === 'idea').length,
+        totalExperiments: experiments.length,
+        recentLearnings: recentLearnings.map((l: LearningRow) => ({
+            id: l.id, title: l.title, resultType: l.resultType, impactLevel: l.impactLevel,
+        })),
+        recentWins: winsThisMonth.slice(0, 3).map((e: ExpRow) => ({
+            id: e.id, title: e.title, funnelStage: e.funnelStage,
+        })),
+        inProgressExperiments: inProgress.slice(0, 4).map((e: ExpRow) => ({
+            id: e.id, title: e.title, funnelStage: e.funnelStage,
+            ownerName: e.owner?.name ?? null,
+            daysSinceUpdate: Math.floor(
+                (now.getTime() - new Date(e.updatedAt).getTime()) / 86400000,
+            ),
+        })),
+    };
+}
+
+export type TeamSummary = Awaited<ReturnType<typeof getTeamSummary>>;
+
 export async function saveScenario(name: string, description: string | null, params: ForecastParameters) {
     const session = await auth();
     if (!session?.user?.organizationId) throw new Error("Unauthorized");
@@ -29,10 +103,10 @@ export async function getScenarios() {
         orderBy: { createdAt: 'desc' }
     });
 
-    return scenarios.map(s => ({
+    return scenarios.map((s: { parameters: string; results: string; [key: string]: unknown }) => ({
         ...s,
         parameters: JSON.parse(s.parameters) as ForecastParameters,
-        results: JSON.parse(s.results)
+        results: JSON.parse(s.results) as Record<string, unknown>,
     }));
 }
 
