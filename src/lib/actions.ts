@@ -68,8 +68,9 @@ export async function registerUser(
         });
 
     } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
         console.error("Signup error:", error);
-        return "Erro ao criar conta. Tente novamente.";
+        return `Erro: ${msg}`;
     }
 
     // After success, we can either redirect to login or sign in directly
