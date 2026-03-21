@@ -2,80 +2,13 @@
 
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useEffect, useState } from "react";
-import { getDashboardMetrics } from "./actions";
+import type { getDashboardMetrics } from "./actions";
 
-/* ─── Loading skeleton ────────────────────────────────────────────────────── */
-
-function LoadingSkeleton() {
-    return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-            {/* KPI skeletons */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px' }}>
-                {Array.from({ length: 5 }).map((_, i) => (
-                    <div
-                        key={i}
-                        style={{
-                            background: 'rgba(107,79,232,0.06)',
-                            border: '1px solid rgba(107,79,232,0.12)',
-                            borderRadius: '12px',
-                            padding: '20px',
-                            borderLeft: '3px solid rgba(107,79,232,0.3)',
-                        }}
-                    >
-                        <div style={{ width: '60%', height: '10px', borderRadius: '4px', background: 'rgba(168,163,199,0.15)', marginBottom: '16px' }} />
-                        <div style={{ width: '80%', height: '24px', borderRadius: '4px', background: 'rgba(168,163,199,0.12)', marginBottom: '8px' }} />
-                        <div style={{ width: '50%', height: '10px', borderRadius: '4px', background: 'rgba(168,163,199,0.1)' }} />
-                    </div>
-                ))}
-            </div>
-            {/* Chart skeleton */}
-            <div
-                style={{
-                    background: 'rgba(107,79,232,0.06)',
-                    border: '1px solid rgba(107,79,232,0.12)',
-                    borderRadius: '12px',
-                    padding: '24px',
-                    height: '420px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '12px',
-                }}
-            >
-                <div style={{ width: '180px', height: '14px', borderRadius: '4px', background: 'rgba(168,163,199,0.15)' }} />
-                <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: '12px', paddingTop: '24px' }}>
-                    {[65, 40, 85, 55, 70].map((h, i) => (
-                        <div
-                            key={i}
-                            style={{
-                                flex: 1,
-                                height: `${h}%`,
-                                borderRadius: '6px 6px 0 0',
-                                background: 'rgba(107,79,232,0.12)',
-                            }}
-                        />
-                    ))}
-                </div>
-            </div>
-        </div>
-    );
-}
+type Metrics = Awaited<ReturnType<typeof getDashboardMetrics>>;
 
 /* ─── Dashboard View ──────────────────────────────────────────────────────── */
 
-export default function DashboardView() {
-    const [metrics, setMetrics] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        getDashboardMetrics().then(data => {
-            setMetrics(data);
-            setLoading(false);
-        });
-    }, []);
-
-    if (loading) return <LoadingSkeleton />;
-
+export default function DashboardView({ metrics }: { metrics: Metrics }) {
     return (
         <div className="space-y-8">
             {/* KPI Cards */}

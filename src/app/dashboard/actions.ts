@@ -59,27 +59,23 @@ export async function getDashboardMetrics(timeRange: string = "last30d") {
     const sixtyDaysAgo = new Date(now);
     sixtyDaysAgo.setDate(now.getDate() - 60);
 
-    // Fetch metrics for last 30 days
-    const currentMetrics = await prisma.metric.findMany({
-        where: {
-            organizationId: session.user.organizationId,
-            date: {
-                gte: thirtyDaysAgo,
-            }
-        },
-        orderBy: { date: 'desc' }
-    });
-
-    // Fetch previous 30 days for trend calculation
-    const previousMetrics = await prisma.metric.findMany({
-        where: {
-            organizationId: session.user.organizationId,
-            date: {
-                gte: sixtyDaysAgo,
-                lt: thirtyDaysAgo,
-            }
-        }
-    });
+    // Fetch both periods in parallel, selecting only needed fields
+    const [currentMetrics, previousMetrics] = await Promise.all([
+        prisma.metric.findMany({
+            where: {
+                organizationId: session.user.organizationId,
+                date: { gte: thirtyDaysAgo },
+            },
+            select: { category: true, value: true },
+        }),
+        prisma.metric.findMany({
+            where: {
+                organizationId: session.user.organizationId,
+                date: { gte: sixtyDaysAgo, lt: thirtyDaysAgo },
+            },
+            select: { category: true, value: true },
+        }),
+    ]);
 
     // Aggregate by category
     const aggregateByCategory = (metrics: any[], category: MetricCategory) => {

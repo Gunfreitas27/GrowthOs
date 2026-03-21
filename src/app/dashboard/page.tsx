@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getDashboardMetrics } from "./actions";
 import DashboardView from "./view";
 
 export default async function DashboardPage() {
@@ -22,6 +23,7 @@ export default async function DashboardPage() {
     }
 
     const firstName = session.user.name?.split(' ')[0] ?? 'Growth Lead';
+    const metrics = await getDashboardMetrics();
 
     return (
         <div style={{ padding: '40px 40px 32px' }}>
@@ -100,7 +102,7 @@ export default async function DashboardPage() {
             </div>
 
             {/* ─── Dashboard content ───────────────────────────────────── */}
-            <DashboardView />
+            <DashboardView metrics={metrics} />
         </div>
     );
 }

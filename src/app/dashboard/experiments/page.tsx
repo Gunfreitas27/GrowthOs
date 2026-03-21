@@ -11,7 +11,16 @@ export default async function ExperimentsPage() {
     const [experiments, users] = await Promise.all([
         prisma.experiment.findMany({
             where: { organizationId: session.user.organizationId },
-            include: { owner: { select: { id: true, name: true } } },
+            select: {
+                id: true, title: true, description: true, hypothesis: true,
+                funnelStage: true, status: true, priorityScore: true,
+                iceImpact: true, iceConfidence: true, iceEase: true,
+                riceReach: true, riceImpact: true, riceConfidence: true, riceEffort: true,
+                ownerId: true, tags: true, relatedMetric: true,
+                expectedLift: true, actualLift: true, result: true, learning: true,
+                startedAt: true, endedAt: true, createdAt: true, updatedAt: true,
+                owner: { select: { id: true, name: true } },
+            },
             orderBy: [{ priorityScore: 'desc' }, { createdAt: 'desc' }],
         }),
         prisma.user.findMany({
