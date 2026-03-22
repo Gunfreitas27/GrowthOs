@@ -86,6 +86,9 @@ model Organization {
   experiments     Experiment[]
   funnels         Funnel[]
   learnings       Learning[]
+  channels        Channel[]
+  utmLinks        UtmLink[]
+  alerts          Alert[]
 }
 
 
@@ -275,4 +278,120 @@ model Learning {
   organization   Organization @relation(fields: [organizationId], references: [id])
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
+}
+
+
+// ─── Channels & Marketing Integrations ─────────────────────────────────────────
+
+model Channel {
+  id             String         @id @default(cuid())
+  connectorType  String         // google-analytics, google-ads, meta-ads, etc.
+  displayName    String         // "Google Analytics 4", "Google Ads", etc.
+  status         String         @default("DISCONNECTED") // ACTIVE, PAUSED, ERROR, DISCONNECTED
+  credentials    String?        // Encrypted JSON credentials
+  config         String?        // Additional configuration (JSON)
+  lastSyncAt     DateTime?
+  syncFrequency  String         @default("DAILY") // HOURLY, DAILY, WEEKLY
+  organizationId String
+  organization   Organization   @relation(fields: [organizationId], references: [id])
+  
+  metrics        ChannelMetrics[]
+  spends         Spend[]
+  
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  
+  @@unique([connectorType, organizationId])
+}
+
+model ChannelMetrics {
+  id             String   @id @default(cuid())
+  channelId      String
+  channel        Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  
+  date           DateTime
+  source         String   @default("total")
+  campaign       String   @default("all")
+  adGroup        String?
+  country        String?
+  device         String?
+  
+  impressions    Int?
+  clicks         Int?
+  spend          Decimal? @db.Decimal(12, 2)
+  revenue        Decimal? @db.Decimal(12, 2)
+  conversions    Int?
+  
+  users          Int?
+  sessions       Int?
+  pageviews      Int?
+  bounceRate     Decimal? @db.Decimal(5, 4)
+  
+  ctr            Decimal? @db.Decimal(6, 4)
+  cpc            Decimal? @db.Decimal(10, 4)
+  cpm            Decimal? @db.Decimal(10, 4)
+  roas           Decimal? @db.Decimal(8, 4)
+  cpl            Decimal? @db.Decimal(10, 4)
+  conversionRate Decimal? @db.Decimal(6, 4)
+  
+  customMetrics  String?   // JSON for connector-specific metrics
+  
+  createdAt      DateTime @default(now())
+  
+  @@unique([channelId, date, source, campaign])
+  @@index([channelId, date])
+}
+
+model Spend {
+  id             String   @id @default(cuid())
+  channelId      String
+  channel        Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  
+  date           DateTime
+  amount         Decimal  @db.Decimal(12, 2)
+  currency       String   @default("BRL")
+  campaignName   String?
+  
+  createdAt      DateTime @default(now())
+  
+  @@index([channelId, date])
+}
+
+model UtmLink {
+  id             String       @id @default(cuid())
+  baseUrl        String
+  source         String
+  medium         String
+  campaign       String?
+  term           String?
+  content        String?
+  shortCode      String?      @unique
+  clicks         Int          @default(0)
+  
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  
+  @@index([organizationId])
+}
+
+model Alert {
+  id             String       @id @default(cuid())
+  type           String       // BUDGET_80, BUDGET_100, ANOMALY, TEST_COMPLETED, CONVERSION_DROP
+  channelId      String?
+  message        String
+  details        String?      // JSON with additional context
+  severity       String       @default("INFO") // INFO, WARNING, CRITICAL
+  status         String       @default("ACTIVE") // ACTIVE, ACKNOWLEDGED, RESOLVED, DISMISSED
+  
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  
+  createdAt      DateTime     @default(now())
+  resolvedAt     DateTime?
+  
+  @@index([organizationId, status])
+  @@index([channelId])
 }
