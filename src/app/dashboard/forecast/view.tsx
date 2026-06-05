@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { MetricCategory } from "@/types/enums";
 import { ForecastParameters, ForecastResult, calculateForecast } from "@/lib/forecast";
-import { getDashboardMetrics, saveScenario } from "../actions";
+import { getDashboardData, saveScenario } from "../actions";
 
 export default function ForecastView() {
     const [baseline, setBaseline] = useState<Record<MetricCategory, number> | null>(null);
@@ -24,13 +24,13 @@ export default function ForecastView() {
     const [scenarioName, setScenarioName] = useState("Novo Cenário");
 
     useEffect(() => {
-        getDashboardMetrics().then(data => {
+        getDashboardData().then(data => {
             const base: Record<MetricCategory, number> = {
-                [MetricCategory.ACQUISITION]: data.acquisition.value,
-                [MetricCategory.ACTIVATION]: data.activation.value,
-                [MetricCategory.RETENTION]: data.retention.value,
-                [MetricCategory.REFERRAL]: data.referral.value,
-                [MetricCategory.REVENUE]: data.revenue.value,
+                [MetricCategory.ACQUISITION]: data.metrics.acquisition.value,
+                [MetricCategory.ACTIVATION]: data.metrics.activation.value,
+                [MetricCategory.RETENTION]: data.metrics.retention.value,
+                [MetricCategory.REFERRAL]: data.metrics.referral.value,
+                [MetricCategory.REVENUE]: data.metrics.revenue.value,
             };
             setBaseline(base);
             setLoading(false);

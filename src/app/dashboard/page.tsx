@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { getDashboardMetrics } from "./actions";
+import { getDashboardData, type DashboardData } from "./actions";
 import DashboardView from "./view";
 
 export default async function DashboardPage() {
@@ -23,11 +23,10 @@ export default async function DashboardPage() {
   }
 
   const firstName = session.user.name?.split(" ")[0] ?? "Growth Lead";
-  const metrics = await getDashboardMetrics();
+  const data = await getDashboardData();
 
   return (
     <div style={{ padding: "40px 40px 32px" }}>
-      {/* ─── Page header ─────────────────────────────────────────── */}
       <div
         style={{
           marginBottom: "40px",
@@ -35,7 +34,6 @@ export default async function DashboardPage() {
           borderBottom: "1px solid rgba(107,79,232,0.12)",
         }}
       >
-        {/* Badge */}
         <div
           style={{
             display: "inline-flex",
@@ -66,7 +64,6 @@ export default async function DashboardPage() {
           </span>
         </div>
 
-        {/* Title */}
         <h1
           style={{
             fontFamily: "var(--font-display)",
@@ -101,8 +98,7 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      {/* ─── Dashboard content ───────────────────────────────────── */}
-      <DashboardView />
+      <DashboardView data={data} />
     </div>
   );
 }

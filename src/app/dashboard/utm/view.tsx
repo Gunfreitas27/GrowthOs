@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,11 +18,21 @@ import {
   Check,
   ExternalLink,
   Search,
-  Filter,
   Plus,
   Trash2,
-  Edit,
+  Globe,
+  MousePointerClick,
+  Radio,
+  Loader2,
+  RefreshCw,
+  AlertTriangle,
 } from "lucide-react";
+import {
+  getUtmLinks,
+  createUtmLink,
+  deleteUtmLink,
+  type UtmFormValues,
+} from "./actions";
 
 const COLORS = {
   pulse: "#6B4FE8",
@@ -38,11 +48,14 @@ const SOURCE_OPTIONS = [
   { value: "instagram", label: "Instagram" },
   { value: "linkedin", label: "LinkedIn" },
   { value: "twitter", label: "Twitter / X" },
+  { value: "tiktok", label: "TikTok" },
   { value: "email", label: "Email" },
   { value: "newsletter", label: "Newsletter" },
   { value: "blog", label: "Blog" },
   { value: "organic", label: "Orgânico" },
   { value: "direct", label: "Direto" },
+  { value: "whatsapp", label: "WhatsApp" },
+  { value: "youtube", label: "YouTube" },
 ];
 
 const MEDIUM_OPTIONS = [
@@ -54,86 +67,48 @@ const MEDIUM_OPTIONS = [
   { value: "affiliate", label: "Afiliado" },
   { value: "video", label: "Vídeo" },
   { value: "display", label: "Display" },
+  { value: "cpm", label: "CPM" },
+  { value: "push", label: "Push" },
+  { value: "sms", label: "SMS" },
 ];
 
-interface UtmLink {
+interface UtmLinkData {
   id: string;
   baseUrl: string;
   source: string;
   medium: string;
-  campaign: string;
-  term?: string;
-  content?: string;
-  shortCode?: string;
+  campaign: string | null;
+  term: string | null;
+  content: string | null;
+  shortCode: string | null;
   clicks: number;
   createdAt: string;
 }
 
-const mockLinks: UtmLink[] = [
-  {
-    id: "1",
-    baseUrl: "https://seudominio.com/landing",
-    source: "google",
-    medium: "cpc",
-    campaign: "black-friday-2024",
-    term: "software-gestao",
-    clicks: 1245,
-    createdAt: "2024-03-01",
-  },
-  {
-    id: "2",
-    baseUrl: "https://seudominio.com/landing",
-    source: "facebook",
-    medium: "social",
-    campaign: "fb-remarketing-marca",
-    content: "banner-topo",
-    clicks: 892,
-    createdAt: "2024-03-05",
-  },
-  {
-    id: "3",
-    baseUrl: "https://seudominio.com/precos",
-    source: "linkedin",
-    medium: "social",
-    campaign: "b2b-q1-2024",
-    content: "cta-empresa",
-    clicks: 456,
-    createdAt: "2024-03-10",
-  },
-  {
-    id: "4",
-    baseUrl: "https://seudominio.com/blog",
-    source: "email",
-    medium: "email",
-    campaign: "newsletter-march",
-    content: "header-link",
-    clicks: 2341,
-    createdAt: "2024-03-15",
-  },
-  {
-    id: "5",
-    baseUrl: "https://seudominio.com/trial",
-    source: "google",
-    medium: "cpc",
-    campaign: "trial-gratuito-br",
-    clicks: 3204,
-    createdAt: "2024-03-18",
-  },
-];
-
 function generateUtmUrl(base: string, params: Record<string, string>): string {
-  const url = new URL(base);
-  Object.entries(params).forEach(([key, value]) => {
-    if (value) url.searchParams.set(`utm_${key}`, value);
-  });
-  return url.toString();
+  try {
+    const url = new URL(base);
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) url.searchParams.set(`utm_${key}`, value);
+    });
+    return url.toString();
+  } catch {
+    return base;
+  }
 }
 
-export default function UtmHubView() {
-  const [links, setLinks] = useState<UtmLink[]>(mockLinks);
+interface UtmPageProps {
+  initialLinks: UtmLinkData[];
+}
+
+export default function UtmHubView({ initialLinks }: UtmPageProps) {
+  const [links, setLinks] = useState<UtmLinkData[]>(initialLinks);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [showBuilder, setShowBuilder] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
   const [newLink, setNewLink] = useState({
     baseUrl: "",
     source: "",
@@ -143,10 +118,28 @@ export default function UtmHubView() {
     content: "",
   });
 
+  const fetchLinks = useCallback(async () => {
+    setLoading(true);
+    try {
+      const result = await getUtmLinks(search);
+      setLinks(result);
+      setError(null);
+    } catch (err) {
+      setError("Erro ao carregar links");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [search]);
+
+  useEffect(() => {
+    fetchLinks();
+  }, [fetchLinks]);
+
   const filteredLinks = links.filter(
     (link) =>
       link.baseUrl.toLowerCase().includes(search.toLowerCase()) ||
-      link.campaign.toLowerCase().includes(search.toLowerCase()) ||
+      (link.campaign || "").toLowerCase().includes(search.toLowerCase()) ||
       link.source.toLowerCase().includes(search.toLowerCase()),
   );
 
@@ -156,17 +149,17 @@ export default function UtmHubView() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const getFullUrl = (link: UtmLink): string => {
+  const getFullUrl = (link: UtmLinkData): string => {
     return generateUtmUrl(link.baseUrl, {
       source: link.source,
       medium: link.medium,
-      campaign: link.campaign,
+      campaign: link.campaign || "",
       term: link.term || "",
       content: link.content || "",
     });
   };
 
-  const handleCreateLink = () => {
+  const handleCreateLink = async () => {
     if (
       !newLink.baseUrl ||
       !newLink.source ||
@@ -176,33 +169,76 @@ export default function UtmHubView() {
       return;
     }
 
-    const link: UtmLink = {
-      id: Date.now().toString(),
-      ...newLink,
-      clicks: 0,
-      createdAt: new Date().toISOString().split("T")[0],
-    };
-
-    setLinks([link, ...links]);
-    setShowBuilder(false);
-    setNewLink({
-      baseUrl: "",
-      source: "",
-      medium: "",
-      campaign: "",
-      term: "",
-      content: "",
-    });
+    setCreating(true);
+    try {
+      const data: UtmFormValues = {
+        baseUrl: newLink.baseUrl,
+        source: newLink.source,
+        medium: newLink.medium,
+        campaign: newLink.campaign,
+        term: newLink.term || undefined,
+        content: newLink.content || undefined,
+      };
+      const created = await createUtmLink(data);
+      setLinks([created, ...links]);
+      setShowBuilder(false);
+      setNewLink({
+        baseUrl: "",
+        source: "",
+        medium: "",
+        campaign: "",
+        term: "",
+        content: "",
+      });
+    } catch (err) {
+      setError("Erro ao criar link");
+      console.error(err);
+    } finally {
+      setCreating(false);
+    }
   };
 
-  const deleteLink = (id: string) => {
+  const handleDelete = async (id: string) => {
+    const prev = links;
     setLinks(links.filter((l) => l.id !== id));
+    try {
+      await deleteUtmLink(id);
+    } catch {
+      setLinks(prev);
+      setError("Erro ao deletar link");
+    }
   };
 
   const totalClicks = links.reduce((acc, l) => acc + l.clicks, 0);
+  const activeSources = [...new Set(links.map((l) => l.source))].length;
 
   return (
     <div className="space-y-6">
+      {error && (
+        <div
+          className="flex items-center gap-3 p-4 rounded-lg"
+          style={{
+            background: "rgba(239,68,68,0.1)",
+            border: "1px solid rgba(239,68,68,0.25)",
+          }}
+        >
+          <AlertTriangle className="w-5 h-5" style={{ color: COLORS.signal }} />
+          <span
+            className="text-sm"
+            style={{ color: COLORS.signal }}
+          >
+            {error}
+          </span>
+          <button
+            onClick={() => setError(null)}
+            className="ml-auto text-xs hover:underline"
+            style={{ color: COLORS.mist }}
+          >
+            Fechar
+          </button>
+        </div>
+      )}
+
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-3">
         <Card
@@ -213,20 +249,40 @@ export default function UtmHubView() {
           }}
         >
           <CardContent className="pt-6">
-            <p className="velox-label" style={{ color: COLORS.mist }}>
-              Total de Links
-            </p>
-            <p
-              className="velox-data"
-              style={{
-                fontSize: "32px",
-                fontWeight: 600,
-                color: "#F8F7FC",
-                marginTop: "4px",
-              }}
-            >
-              {links.length}
-            </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="velox-label" style={{ color: COLORS.mist }}>
+                  Total de Links
+                </p>
+                <p
+                  className="velox-data"
+                  style={{
+                    fontSize: "32px",
+                    fontWeight: 600,
+                    color: "#F8F7FC",
+                    marginTop: "4px",
+                  }}
+                >
+                  {links.length}
+                </p>
+              </div>
+              <div
+                style={{
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "12px",
+                  background: "rgba(107,79,232,0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Link2
+                  className="w-5 h-5"
+                  style={{ color: COLORS.pulse }}
+                />
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -238,20 +294,40 @@ export default function UtmHubView() {
           }}
         >
           <CardContent className="pt-6">
-            <p className="velox-label" style={{ color: COLORS.mist }}>
-              Total de Cliques
-            </p>
-            <p
-              className="velox-data"
-              style={{
-                fontSize: "32px",
-                fontWeight: 600,
-                color: COLORS.velocity,
-                marginTop: "4px",
-              }}
-            >
-              {totalClicks.toLocaleString()}
-            </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="velox-label" style={{ color: COLORS.mist }}>
+                  Total de Cliques
+                </p>
+                <p
+                  className="velox-data"
+                  style={{
+                    fontSize: "32px",
+                    fontWeight: 600,
+                    color: COLORS.velocity,
+                    marginTop: "4px",
+                  }}
+                >
+                  {totalClicks.toLocaleString()}
+                </p>
+              </div>
+              <div
+                style={{
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "12px",
+                  background: "rgba(26,211,197,0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <MousePointerClick
+                  className="w-5 h-5"
+                  style={{ color: COLORS.velocity }}
+                />
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -263,20 +339,40 @@ export default function UtmHubView() {
           }}
         >
           <CardContent className="pt-6">
-            <p className="velox-label" style={{ color: COLORS.mist }}>
-              Canais Ativos
-            </p>
-            <p
-              className="velox-data"
-              style={{
-                fontSize: "32px",
-                fontWeight: 600,
-                color: "#F8F7FC",
-                marginTop: "4px",
-              }}
-            >
-              {[...new Set(links.map((l) => l.source))].length}
-            </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="velox-label" style={{ color: COLORS.mist }}>
+                  Canais Ativos
+                </p>
+                <p
+                  className="velox-data"
+                  style={{
+                    fontSize: "32px",
+                    fontWeight: 600,
+                    color: "#F8F7FC",
+                    marginTop: "4px",
+                  }}
+                >
+                  {activeSources}
+                </p>
+              </div>
+              <div
+                style={{
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "12px",
+                  background: "rgba(245,158,11,0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Radio
+                  className="w-5 h-5"
+                  style={{ color: COLORS.insight }}
+                />
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -449,29 +545,33 @@ export default function UtmHubView() {
                     border: "1px solid rgba(26,217,197,0.3)",
                   }}
                 >
-                  <p
-                    className="velox-label mb-2"
-                    style={{ color: COLORS.velocity }}
-                  >
-                    URL Gerada
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <code
-                      className="flex-1 text-xs break-all"
-                      style={{
-                        color: "#F8F7FC",
-                        fontFamily: "var(--font-data)",
-                      }}
+                  <div className="flex items-center gap-2 mb-2">
+                    <Globe
+                      className="w-4 h-4"
+                      style={{ color: COLORS.velocity }}
+                    />
+                    <p
+                      className="velox-label"
+                      style={{ color: COLORS.velocity }}
                     >
-                      {generateUtmUrl(newLink.baseUrl, {
-                        source: newLink.source,
-                        medium: newLink.medium,
-                        campaign: newLink.campaign,
-                        term: newLink.term,
-                        content: newLink.content,
-                      })}
-                    </code>
+                      URL Gerada
+                    </p>
                   </div>
+                  <code
+                    className="text-xs break-all block"
+                    style={{
+                      color: "#F8F7FC",
+                      fontFamily: "var(--font-data)",
+                    }}
+                  >
+                    {generateUtmUrl(newLink.baseUrl, {
+                      source: newLink.source,
+                      medium: newLink.medium,
+                      campaign: newLink.campaign,
+                      term: newLink.term,
+                      content: newLink.content,
+                    })}
+                  </code>
                 </div>
               )}
 
@@ -488,13 +588,18 @@ export default function UtmHubView() {
               </Button>
               <Button
                 onClick={handleCreateLink}
+                disabled={creating}
                 style={{
                   background: COLORS.pulse,
                   color: "white",
                 }}
               >
-                <Plus className="w-4 h-4 mr-2" />
-                Criar Link
+                {creating ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Plus className="w-4 h-4 mr-2" />
+                )}
+                {creating ? "Criando..." : "Criar Link"}
               </Button>
             </div>
           </CardContent>
@@ -538,6 +643,21 @@ export default function UtmHubView() {
                 }}
               />
             </div>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={fetchLinks}
+              disabled={loading}
+              style={{
+                borderColor: "rgba(107,79,232,0.3)",
+                color: COLORS.mist,
+              }}
+              title="Recarregar"
+            >
+              <RefreshCw
+                className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+              />
+            </Button>
             <Button
               onClick={() => setShowBuilder(!showBuilder)}
               style={{
@@ -593,129 +713,166 @@ export default function UtmHubView() {
                     className="text-right py-3 px-4 velox-label"
                     style={{ color: COLORS.mist }}
                   >
+                    Criado em
+                  </th>
+                  <th
+                    className="text-right py-3 px-4 velox-label"
+                    style={{ color: COLORS.mist }}
+                  >
                     Ações
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {filteredLinks.map((link) => (
-                  <tr
-                    key={link.id}
-                    style={{
-                      borderBottom: "1px solid rgba(107,79,232,0.08)",
-                    }}
-                  >
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-2">
-                        <Link2
-                          className="w-4 h-4 shrink-0"
-                          style={{ color: COLORS.pulse }}
-                        />
-                        <code
-                          className="text-xs truncate max-w-[200px]"
-                          style={{
-                            color: "#F8F7FC",
-                            fontFamily: "var(--font-data)",
-                          }}
-                          title={getFullUrl(link)}
-                        >
-                          {getFullUrl(link)}
-                        </code>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span
-                        className="px-2 py-1 rounded text-xs"
-                        style={{
-                          background: `${COLORS.pulse}20`,
-                          color: COLORS.pulse,
-                        }}
-                      >
-                        {link.source}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span
-                        className="px-2 py-1 rounded text-xs"
-                        style={{
-                          background: `${COLORS.velocity}20`,
-                          color: COLORS.velocity,
-                        }}
-                      >
-                        {link.medium}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span
-                        style={{
-                          color: "#F8F7FC",
-                          fontFamily: "var(--font-ui)",
-                          fontSize: "13px",
-                        }}
-                      >
-                        {link.campaign}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-right">
-                      <span
-                        className="velox-data"
-                        style={{
-                          color: "#F8F7FC",
-                          fontSize: "14px",
-                        }}
-                      >
-                        {link.clicks.toLocaleString()}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="flex justify-end gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() =>
-                            copyToClipboard(getFullUrl(link), link.id)
-                          }
-                          style={{ color: COLORS.mist }}
-                        >
-                          {copiedId === link.id ? (
-                            <Check
-                              className="w-4 h-4"
-                              style={{ color: COLORS.velocity }}
-                            />
-                          ) : (
-                            <Copy className="w-4 h-4" />
-                          )}
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          asChild
-                          style={{ color: COLORS.mist }}
-                        >
-                          <a
-                            href={getFullUrl(link)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <ExternalLink className="w-4 h-4" />
-                          </a>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => deleteLink(link.id)}
-                          style={{ color: COLORS.signal }}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
+                {loading ? (
+                  <tr>
+                    <td colSpan={7} className="text-center py-12">
+                      <Loader2
+                        className="w-8 h-8 mx-auto animate-spin"
+                        style={{ color: COLORS.mist }}
+                      />
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  filteredLinks.map((link) => (
+                    <tr
+                      key={link.id}
+                      style={{
+                        borderBottom: "1px solid rgba(107,79,232,0.08)",
+                      }}
+                    >
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2">
+                          <Link2
+                            className="w-4 h-4 shrink-0"
+                            style={{ color: COLORS.pulse }}
+                          />
+                          <code
+                            className="text-xs truncate max-w-[180px]"
+                            style={{
+                              color: "#F8F7FC",
+                              fontFamily: "var(--font-data)",
+                            }}
+                            title={getFullUrl(link)}
+                          >
+                            {getFullUrl(link)}
+                          </code>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span
+                          className="px-2 py-1 rounded text-xs"
+                          style={{
+                            background: `${COLORS.pulse}20`,
+                            color: COLORS.pulse,
+                          }}
+                        >
+                          {link.source}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span
+                          className="px-2 py-1 rounded text-xs"
+                          style={{
+                            background: `${COLORS.velocity}20`,
+                            color: COLORS.velocity,
+                          }}
+                        >
+                          {link.medium}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span
+                          style={{
+                            color: "#F8F7FC",
+                            fontFamily: "var(--font-ui)",
+                            fontSize: "13px",
+                          }}
+                        >
+                          {link.campaign}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        <span
+                          className="velox-data"
+                          style={{
+                            color: "#F8F7FC",
+                            fontSize: "14px",
+                          }}
+                        >
+                          {link.clicks.toLocaleString()}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        <span
+                          style={{
+                            color: COLORS.mist,
+                            fontSize: "12px",
+                          }}
+                        >
+                          {link.createdAt}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex justify-end gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              copyToClipboard(getFullUrl(link), link.id)
+                            }
+                            style={{ color: COLORS.mist }}
+                            title="Copiar URL"
+                          >
+                            {copiedId === link.id ? (
+                              <Check
+                                className="w-4 h-4"
+                                style={{ color: COLORS.velocity }}
+                              />
+                            ) : (
+                              <Copy className="w-4 h-4" />
+                            )}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            asChild
+                            style={{ color: COLORS.mist }}
+                            title="Abrir em nova aba"
+                          >
+                            <a
+                              href={getFullUrl(link)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => {
+                                const l = links.find(l => l.id === link.id);
+                                if (l) {
+                                  l.clicks += 1;
+                                  setLinks([...links]);
+                                }
+                              }}
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                            </a>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDelete(link.id)}
+                            style={{ color: COLORS.signal }}
+                            title="Excluir"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
 
-            {filteredLinks.length === 0 && (
+            {!loading && filteredLinks.length === 0 && (
               <div className="text-center py-12">
                 <Link2
                   className="w-12 h-12 mx-auto mb-4"
@@ -733,8 +890,9 @@ export default function UtmHubView() {
                   className="text-sm mt-1"
                   style={{ color: COLORS.mist, opacity: 0.7 }}
                 >
-                  Crie seu primeiro link UTM para começar a rastrear suas
-                  campanhas.
+                  {search
+                    ? "Nenhum resultado para sua busca."
+                    : "Crie seu primeiro link UTM para começar a rastrear suas campanhas."}
                 </p>
               </div>
             )}

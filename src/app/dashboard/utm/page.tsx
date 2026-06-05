@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { prisma } from "@/lib/prisma";
 import UtmHubView from "./view";
 
 export default async function UtmPage() {
@@ -12,6 +13,11 @@ export default async function UtmPage() {
   if (!session.user.organizationId) {
     redirect("/onboarding");
   }
+
+  const initialLinks = await prisma.utmLink.findMany({
+    where: { organizationId: session.user.organizationId },
+    orderBy: { createdAt: "desc" },
+  });
 
   return (
     <div style={{ padding: "40px 40px 32px" }}>
@@ -72,7 +78,12 @@ export default async function UtmPage() {
         </p>
       </div>
 
-      <UtmHubView />
+      <UtmHubView
+        initialLinks={initialLinks.map((l) => ({
+          ...l,
+          createdAt: l.createdAt.toISOString().split("T")[0],
+        }))}
+      />
     </div>
   );
 }
