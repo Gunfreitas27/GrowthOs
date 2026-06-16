@@ -26,9 +26,9 @@
   --velox-indigo-40:   #2D1B6B66;
 
   /* Typography */
-  --font-display: var(--font-display, 'Plus Jakarta Sans', system-ui, sans-serif);
-  --font-ui:      var(--font-ui, 'Inter', system-ui, sans-serif);
-  --font-data:    var(--font-data, 'JetBrains Mono', 'Fira Code', monospace);
+  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-ui:      'Inter', system-ui, sans-serif;
+  --font-data:    'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
 }
 
 /* ─── Tailwind Theme Mapping ────────────────────────────────────────────────── */
