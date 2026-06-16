@@ -31,7 +31,7 @@ export async function runSync(dataSourceId: string): Promise<SyncResult> {
 
         if (result.success && result.data) {
             // Map data (assumed GA for now)
-            const metrics = mapGoogleAnalyticsData(result.data);
+            const metrics = mapGoogleAnalyticsData(result.data as Record<string, unknown>[]);
 
             await prisma.$transaction(async (tx) => {
                 for (const m of metrics) {

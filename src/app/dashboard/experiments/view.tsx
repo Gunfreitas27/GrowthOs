@@ -435,6 +435,7 @@ export default function ExperimentsView({
   const [saving, setSaving] = useState(false);
 
   const form = useForm<FormValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(formSchema) as any,
     defaultValues: DEFAULT_VALUES,
   });

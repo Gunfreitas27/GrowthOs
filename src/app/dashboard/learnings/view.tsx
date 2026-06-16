@@ -198,8 +198,8 @@ export default function LearningsView({ initialLearnings, experiments }: {
     const [editingLearning, setEditingLearning] = useState<Learning | null>(null);
     const [saving, setSaving] = useState(false);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const form = useForm<FormValues>({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         resolver: zodResolver(formSchema) as any,
         defaultValues: DEFAULT_VALUES,
     });

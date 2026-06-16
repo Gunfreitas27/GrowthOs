@@ -5,8 +5,9 @@ import { getConnector } from "./registry";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { runSync } from "./service"; // Import the service
+import type { ConnectorConfig } from "./types";
 
-export async function connectSource(connectorId: string, config: any) {
+export async function connectSource(connectorId: string, config: ConnectorConfig) {
     const session = await auth();
     if (!session?.user?.id || !session.user.organizationId) {
         throw new Error("Unauthorized");
@@ -25,7 +26,7 @@ export async function connectSource(connectorId: string, config: any) {
             data: {
                 name: connector.name,
                 type: "GOOGLE_ANALYTICS", // Map dynamically in real app
-                config: config,
+                config: JSON.stringify(config),
                 organizationId: session.user.organizationId,
                 status: "ACTIVE",
             }

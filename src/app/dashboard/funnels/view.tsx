@@ -101,8 +101,8 @@ function CreateFunnelDialog({ onCreated }: { onCreated: () => void }) {
     const [open, setOpen] = useState(false);
     const [saving, setSaving] = useState(false);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const form = useForm<FunnelForm>({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         resolver: zodResolver(funnelFormSchema) as any,
         defaultValues: { name: '', description: '', stages: [{ name: '', order: 0 }] },
     });
@@ -380,7 +380,7 @@ export default function FunnelsView({ initialFunnels }: { initialFunnels: Funnel
                             <TabsContent value="visualization" className="mt-4">
                                 {!latestSnapshot ? (
                                     <div className="text-gray-400 text-sm py-8 text-center">
-                                        Nenhum snapshot registrado. Clique em "Registrar snapshot" para começar.
+                                        Nenhum snapshot registrado. Clique em &quot;Registrar snapshot&quot; para começar.
                                     </div>
                                 ) : (
                                     <Card>

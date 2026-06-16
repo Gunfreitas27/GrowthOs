@@ -1,7 +1,7 @@
 'use client'
 
 import { AVAILABLE_CONNECTORS } from "@/lib/etl/registry";
-import { Connector } from "@/lib/etl/types";
+import type { Connector } from "@/lib/etl/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { connectSource, disconnectSource } from "./actions"; // We'll move server actions to a separate file or use the ones we made
@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 type ConnectedSource = {
     id: string;
     name: string;
-    config: any;
+    config: string;
 };
 
 export default function ConnectorsList({ connectedSources }: { connectedSources: ConnectedSource[] }) {
@@ -51,7 +51,7 @@ export default function ConnectorsList({ connectedSources }: { connectedSources:
 
     return (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {AVAILABLE_CONNECTORS.map((connector: any) => {
+            {AVAILABLE_CONNECTORS.map((connector: Connector) => {
                 const source = connectedSources.find((s) => s.name === connector.name);
                 const isConnected = !!source;
 

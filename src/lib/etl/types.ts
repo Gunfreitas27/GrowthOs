@@ -4,7 +4,7 @@ export interface ConnectorConfig {
     clientSecret?: string;
     refreshToken?: string;
     accountId?: string;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export interface SyncResult {
@@ -12,7 +12,7 @@ export interface SyncResult {
     recordsProcessed: number;
     errors?: string[];
     lastSync?: Date;
-    data?: any[]; // Raw data records for mapping
+    data?: unknown[]; // Raw data records for mapping
 }
 
 export interface Connector {

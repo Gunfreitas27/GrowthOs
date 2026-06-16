@@ -8,17 +8,17 @@ export interface MetricInput {
     sourceId?: string;
 }
 
-export function mapGoogleAnalyticsData(rawData: any[]): MetricInput[] {
+export function mapGoogleAnalyticsData(rawData: Record<string, unknown>[]): MetricInput[] {
     const metrics: MetricInput[] = [];
 
     rawData.forEach((record) => {
-        const date = new Date(record.date);
+        const date = new Date(record.date as string | number);
 
         // Map Users -> ACQUISITION
         if (record.users !== undefined) {
             metrics.push({
                 name: "users",
-                value: record.users,
+                value: record.users as number,
                 date: date,
                 category: MetricCategory.ACQUISITION,
             });
@@ -28,18 +28,17 @@ export function mapGoogleAnalyticsData(rawData: any[]): MetricInput[] {
         if (record.sessions !== undefined) {
             metrics.push({
                 name: "sessions",
-                value: record.sessions,
+                value: record.sessions as number,
                 date: date,
                 category: MetricCategory.ACQUISITION,
             });
         }
 
-        // Map Bounce Rate -> RETENTION (Inverse? Or just store as is)
-        // Storing as is for now.
+        // Map Bounce Rate -> RETENTION
         if (record.bounceRate !== undefined) {
             metrics.push({
                 name: "bounce_rate",
-                value: record.bounceRate,
+                value: record.bounceRate as number,
                 date: date,
                 category: MetricCategory.RETENTION,
             });
@@ -49,7 +48,7 @@ export function mapGoogleAnalyticsData(rawData: any[]): MetricInput[] {
         if (record.revenue !== undefined) {
             metrics.push({
                 name: "revenue",
-                value: record.revenue,
+                value: record.revenue as number,
                 date: date,
                 category: MetricCategory.REVENUE,
             });

@@ -44,7 +44,19 @@ interface ChartWidgetProps {
   showTooltip?: boolean;
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+interface TooltipEntry {
+  name: string;
+  value: number;
+  color: string;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipEntry[];
+  label?: string;
+}
+
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (!active || !payload?.length) return null;
 
   return (
@@ -60,7 +72,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
       <p className="text-xs mb-2" style={{ color: COLORS.mist }}>
         {label}
       </p>
-      {payload.map((entry: any, index: number) => (
+      {payload.map((entry: TooltipEntry, index: number) => (
         <div key={index} className="flex items-center gap-2">
           <div
             className="w-2 h-2 rounded-full"
