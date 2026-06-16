@@ -20,7 +20,7 @@ export function calculateForecast(
     months: number = 12
 ): ForecastResult[] {
     const results: ForecastResult[] = [];
-    let currentBaseline = { ...baseline };
+    const currentBaseline = { ...baseline };
 
     for (let m = 1; m <= months; m++) {
         // Apply uplifts to baseline for this month's simulation

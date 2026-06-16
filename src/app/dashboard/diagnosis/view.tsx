@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { runDiagnosis } from "./actions";
+import type { DiagnosisResult, Bottleneck } from "@/lib/diagnosis/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -61,7 +62,7 @@ const severityConfig: Record<string, string> = {
 };
 
 export default function DiagnosisView() {
-  const [diagnosis, setDiagnosis] = useState<any>(null);
+  const [diagnosis, setDiagnosis] = useState<DiagnosisResult | null>(null);
   const [loading, setLoading] = useState(true);
 
   const loadDiagnosis = async () => {
@@ -176,7 +177,7 @@ export default function DiagnosisView() {
             Gargalos Detectados
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
-            {diagnosis.bottlenecks.map((b: any, i: number) => {
+            {diagnosis.bottlenecks.map((b: Bottleneck, i: number) => {
               const sevColor = severityConfig[b.severity as keyof typeof severityConfig] || COLORS.insight;
               return (
                 <Card
@@ -285,7 +286,7 @@ export default function DiagnosisView() {
             Ações Recomendadas
           </h2>
           <div className="space-y-4">
-            {diagnosis.recommendations.map((r: any, i: number) => {
+            {diagnosis.recommendations.map((r: DiagnosisResult['recommendations'][number], i: number) => {
               const impConf = impactColors[r.impact as keyof typeof impactColors] || impactColors.MEDIUM;
               const effConf = effortColors[r.effort as keyof typeof effortColors] || effortColors.MEDIUM;
               return (

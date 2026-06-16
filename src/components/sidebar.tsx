@@ -14,12 +14,27 @@ import {
   Zap,
   BarChart3,
   LinkIcon,
+  Sparkles,
+  type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 
-const menuItems = [
+interface MenuItem {
+  title: string
+  href: string
+  icon: LucideIcon
+  isPrimary?: boolean
+}
+
+const menuItems: MenuItem[] = [
+  {
+    title: "Velox AI",
+    href: "/dashboard/agent",
+    icon: Sparkles,
+    isPrimary: true,
+  },
   {
     title: "Visão Geral",
     href: "/dashboard",
@@ -149,7 +164,8 @@ export default function Sidebar() {
       {/* Nav */}
       <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto mt-2">
         {menuItems.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
+          const isPrimary = item.isPrimary;
           return (
             <Link
               key={item.href}
@@ -159,7 +175,17 @@ export default function Sidebar() {
                 isActive ? "text-white" : "text-[#A8A3C7] hover:text-white",
               )}
               style={
-                isActive
+                isPrimary
+                  ? {
+                      background: isActive
+                        ? "linear-gradient(135deg, rgba(107,79,232,0.25), rgba(26,211,197,0.1))"
+                        : "rgba(107, 79, 232, 0.08)",
+                      border: isActive
+                        ? "1px solid rgba(107, 79, 232, 0.4)"
+                        : "1px solid rgba(107, 79, 232, 0.2)",
+                      marginBottom: "8px",
+                    }
+                  : isActive
                   ? {
                       background: "rgba(107, 79, 232, 0.18)",
                       borderLeft: "3px solid #6B4FE8",
@@ -172,9 +198,27 @@ export default function Sidebar() {
             >
               <item.icon
                 className="w-4 h-4 shrink-0"
-                style={{ color: isActive ? "var(--velox-pulse)" : undefined }}
+                style={{
+                  color: isPrimary
+                    ? "var(--velox-pulse)"
+                    : isActive
+                    ? "var(--velox-pulse)"
+                    : undefined,
+                }}
               />
               {item.title}
+              {isPrimary && (
+                <span
+                  className="ml-auto text-[10px] px-1.5 py-0.5 rounded font-semibold"
+                  style={{
+                    background: "rgba(26, 211, 197, 0.15)",
+                    color: "var(--velox-velocity)",
+                    fontFamily: "var(--font-ui)",
+                  }}
+                >
+                  IA
+                </span>
+              )}
             </Link>
           );
         })}

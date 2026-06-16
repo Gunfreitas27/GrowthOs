@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,6 @@ export default function ForecastView() {
         referralUplift: 0,
         revenueUplift: 0,
     });
-    const [forecastData, setForecastData] = useState<ForecastResult[]>([]);
     const [scenarioName, setScenarioName] = useState("Novo Cenário");
 
     useEffect(() => {
@@ -37,11 +36,9 @@ export default function ForecastView() {
         });
     }, []);
 
-    useEffect(() => {
-        if (baseline) {
-            const data = calculateForecast(baseline, params);
-            setForecastData(data);
-        }
+    const forecastData = useMemo<ForecastResult[]>(() => {
+        if (!baseline) return [];
+        return calculateForecast(baseline, params);
     }, [baseline, params]);
 
     const handleSave = async () => {
@@ -119,7 +116,7 @@ export default function ForecastView() {
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                                 <XAxis dataKey="month" label={{ value: 'Mês', position: 'insideBottom', offset: -5 }} />
                                 <YAxis tickFormatter={formatCurrency} />
-                                <Tooltip formatter={(value: any) => formatCurrency(value)} />
+                                <Tooltip formatter={(value) => typeof value === 'number' ? formatCurrency(value) : String(value)} />
                                 <Line
                                     type="monotone"
                                     dataKey="totalRevenue"

@@ -443,7 +443,7 @@ function BigIdea() {
                     color: '#F8F7FC',
                     marginBottom: '24px',
                 }}>
-                    "O melhor time de growth não é o que tem mais ideias.
+                    &quot;O melhor time de growth não é o que tem mais ideias.
                     É o que executa{' '}
                     <span style={{
                         background: 'linear-gradient(90deg, #6B4FE8, #1AD3C5)',
@@ -461,7 +461,7 @@ function BigIdea() {
                         backgroundClip: 'text',
                     }}>
                         mais sistematicamente
-                    </span>."
+                    </span>.&quot;
                 </p>
                 <p style={{ fontFamily: 'var(--font-ui)', fontSize: '14px', color: 'var(--velox-mist)' }}>
                     Princípio central do Velox
