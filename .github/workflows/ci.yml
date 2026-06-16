@@ -38,6 +38,16 @@ jobs:
       - name: Type check
         run: npx tsc --noEmit
 
-        # Build
+        # Generate Prisma client (no DB connection needed)
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+        # Build Next.js (db push is skipped; Vercel handles schema sync)
       - name: Build
-        run: npm run build
+        run: npx next build
+        env:
+          POSTGRES_PRISMA_URL: postgresql://ci:ci@localhost:5432/ci
+          POSTGRES_URL_NON_POOLING: postgresql://ci:ci@localhost:5432/ci
+          NEXTAUTH_SECRET: ci-secret-for-build
+          NEXTAUTH_URL: http://localhost:3000
+          ANTHROPIC_API_KEY: sk-ant-placeholder
