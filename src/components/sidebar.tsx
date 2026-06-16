@@ -15,12 +15,20 @@ import {
   BarChart3,
   LinkIcon,
   Sparkles,
+  type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 
-const menuItems = [
+interface MenuItem {
+  title: string
+  href: string
+  icon: LucideIcon
+  isPrimary?: boolean
+}
+
+const menuItems: MenuItem[] = [
   {
     title: "Velox AI",
     href: "/dashboard/agent",
@@ -157,7 +165,7 @@ export default function Sidebar() {
       <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto mt-2">
         {menuItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
-          const isPrimary = (item as any).isPrimary;
+          const isPrimary = item.isPrimary;
           return (
             <Link
               key={item.href}

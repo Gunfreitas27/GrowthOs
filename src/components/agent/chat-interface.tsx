@@ -84,8 +84,8 @@ export function ChatInterface({ userName, orgName }: ChatInterfaceProps) {
     try {
       const res = await fetch(`/api/agent/conversations/${id}/messages`)
       if (res.ok) {
-        const data = await res.json()
-        const loaded: DisplayMessage[] = data.map((m: any) => ({
+        const data = await res.json() as Array<{ id: string; role: string; content: string }>
+        const loaded: DisplayMessage[] = data.map((m) => ({
           id: m.id,
           role: m.role as 'user' | 'assistant',
           content: m.content,
@@ -239,8 +239,8 @@ export function ChatInterface({ userName, orgName }: ChatInterfaceProps) {
           m.id === assistantMsgId ? { ...m, isStreaming: false } : m
         )
       )
-    } catch (error: any) {
-      if (error?.name === 'AbortError') return
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') return
       setMessages((prev) =>
         prev.map((m) =>
           m.id === assistantMsgId

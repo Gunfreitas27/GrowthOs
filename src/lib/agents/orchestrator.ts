@@ -37,7 +37,7 @@ export class GrowthOrchestrator {
     userId: string
   ): AsyncGenerator<SSEEvent> {
     const systemPrompt = buildSystemPrompt(orgContext)
-    let conversationMessages = [...messages]
+    const conversationMessages = [...messages]
     let fullText = ''
     let inputTokens = 0
     let outputTokens = 0

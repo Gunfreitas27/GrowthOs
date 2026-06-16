@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import type { Tool } from '@anthropic-ai/sdk/resources/messages'
 import { prisma } from '@/lib/prisma'
+import type { Prisma } from '@prisma/client'
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -544,8 +545,8 @@ async function getFunnelData(
       let stages = 'No recent snapshots'
       if (snap?.stageData) {
         try {
-          const s = JSON.parse(snap.stageData)
-          stages = s.map((st: any) => `${st.stageName}: ${st.value}`).join(' → ')
+          const s = JSON.parse(snap.stageData) as Array<{ stageName: string; value: string | number }>
+          stages = s.map((st) => `${st.stageName}: ${st.value}`).join(' → ')
         } catch {
           stages = 'Parse error'
         }
@@ -560,7 +561,7 @@ async function getExperiments(
   input: Record<string, unknown>
 ): Promise<string> {
   const status = typeof input.status === 'string' ? input.status : 'all'
-  const where: any = { organizationId }
+  const where: Prisma.ExperimentWhereInput = { organizationId }
   if (status !== 'all') where.status = status
 
   const experiments = await prisma.experiment.findMany({
@@ -584,9 +585,9 @@ async function getLearnings(
   organizationId: string,
   input: Record<string, unknown>
 ): Promise<string> {
-  const where: any = { organizationId }
-  if (input.category && input.category !== 'all') where.category = input.category
-  if (input.result_type && input.result_type !== 'all') where.resultType = input.result_type
+  const where: Prisma.LearningWhereInput = { organizationId }
+  if (input.category && input.category !== 'all') where.category = String(input.category)
+  if (input.result_type && input.result_type !== 'all') where.resultType = String(input.result_type)
 
   const learnings = await prisma.learning.findMany({
     where,
