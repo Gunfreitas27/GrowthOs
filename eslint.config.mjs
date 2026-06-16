@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Seed scripts are plain Node.js — not subject to TypeScript ESLint rules
+    "prisma/**",
   ]),
 ]);
 
