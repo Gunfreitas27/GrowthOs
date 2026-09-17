@@ -25,14 +25,14 @@ function GoogleIcon() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--surface-soft)]">
-      <div className="w-full max-w-sm p-8 rounded-2xl border border-[var(--border)] bg-[var(--card)]">
+    <div className="min-h-screen flex items-center justify-center bg-surface-soft">
+      <div className="w-full max-w-sm p-8 rounded-2xl border border-border bg-card">
         <div className="text-center mb-8">
-          <div className="w-10 h-10 rounded-xl bg-[var(--primary)] flex items-center justify-center mx-auto mb-4">
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center mx-auto mb-4">
             <span className="text-white font-bold text-lg">F</span>
           </div>
           <h1 className="text-xl font-semibold">Flywell</h1>
-          <p className="text-sm text-[var(--muted-foreground)] mt-1">Growth Orchestrator Platform</p>
+          <p className="text-sm text-muted-foreground mt-1">Growth Orchestrator Platform</p>
         </div>
 
         <form
@@ -43,14 +43,14 @@ export default function LoginPage() {
         >
           <button
             type="submit"
-            className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-lg border border-[var(--border)] bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-lg border border-border bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
           >
             <GoogleIcon />
             Entrar com Google
           </button>
         </form>
 
-        <p className="text-center text-xs text-[var(--muted-foreground)] mt-6">
+        <p className="text-center text-xs text-muted-foreground mt-6">
           Primeiro acesso? Um workspace é criado automaticamente para você.
         </p>
       </div>

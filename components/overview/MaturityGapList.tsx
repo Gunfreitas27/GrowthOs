@@ -24,19 +24,19 @@ function Row({ dim, detail, color }: { dim: MaturityDimension; detail: ScoreDeta
   return (
     <div className={color === 'red' ? 'border-l-2 border-red-400 pl-3' : 'border-l-2 border-green-400 pl-3'}>
       <div className="flex items-center justify-between mb-1.5">
-        <span className="text-sm font-medium text-[var(--foreground)]">{LABELS[dim]}</span>
-        <span className="text-sm font-semibold text-[var(--foreground)] tabular-nums">
+        <span className="text-sm font-medium text-foreground">{LABELS[dim]}</span>
+        <span className="text-sm font-semibold text-foreground tabular-nums">
           {detail.score.toFixed(1)}
         </span>
       </div>
-      <div className="w-full h-1.5 rounded-full bg-[var(--surface-strong)] mb-2">
+      <div className="w-full h-1.5 rounded-full bg-surface-strong mb-2">
         <div
           className={color === 'red' ? 'h-full rounded-full bg-red-500 transition-all duration-700' : 'h-full rounded-full bg-green-500 transition-all duration-700'}
           style={{ width: `${(detail.score / 5) * 100}%` }}
         />
       </div>
       {detail.rationale && (
-        <p className="text-xs text-[var(--muted-foreground)] leading-relaxed">{detail.rationale}</p>
+        <p className="text-xs text-muted-foreground leading-relaxed">{detail.rationale}</p>
       )}
     </div>
   );
@@ -53,7 +53,7 @@ export default function MaturityGapList({ scores }: MaturityGapListProps) {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-xs uppercase tracking-widest text-[var(--muted-foreground)] mb-4 flex items-center gap-1.5">
+        <h3 className="text-xs uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-1.5">
           <TrendingDown size={12} className="text-red-400" />
           Gaps Prioritários
         </h3>
@@ -65,7 +65,7 @@ export default function MaturityGapList({ scores }: MaturityGapListProps) {
       </div>
 
       <div>
-        <h3 className="text-xs uppercase tracking-widest text-[var(--muted-foreground)] mb-4 flex items-center gap-1.5">
+        <h3 className="text-xs uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-1.5">
           <TrendingUp size={12} className="text-green-400" />
           Maiores Forças
         </h3>

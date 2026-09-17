@@ -50,15 +50,15 @@ export default function MaturityRadar({ scores, showCommunity = false }: Maturit
   if (!hasData) {
     return (
       <div className="flex flex-col items-center justify-center h-[360px] text-center">
-        <div className="w-16 h-16 rounded-full bg-[var(--surface-strong)] flex items-center justify-center mb-4">
+        <div className="w-16 h-16 rounded-full bg-surface-strong flex items-center justify-center mb-4">
           <span className="text-2xl">📊</span>
         </div>
-        <p className="text-[var(--muted-foreground)] text-sm">
+        <p className="text-muted-foreground text-sm">
           Complete o diagnóstico para visualizar seu radar de maturidade
         </p>
         <a
           href="/onboarding"
-          className="mt-4 px-4 py-2 rounded-lg bg-[var(--primary)] text-white text-sm font-medium hover:opacity-90 transition-opacity"
+          className="mt-4 px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:opacity-90 transition-opacity"
         >
           Iniciar diagnóstico
         </a>

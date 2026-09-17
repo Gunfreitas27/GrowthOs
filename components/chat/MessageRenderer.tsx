@@ -16,10 +16,10 @@ export default function MessageRenderer({ content }: Props) {
 
   if (content.type === 'module_unlock') {
     return (
-      <div className="flex items-start gap-2 p-2 rounded-md bg-[var(--primary)]/10 border border-[var(--primary)]/30 mt-1">
-        <Unlock size={14} className="text-[var(--primary)] mt-0.5 shrink-0" />
+      <div className="flex items-start gap-2 p-2 rounded-md bg-primary/10 border border-primary/30 mt-1">
+        <Unlock size={14} className="text-primary mt-0.5 shrink-0" />
         <div>
-          <p className="text-xs font-semibold text-[var(--primary)] uppercase tracking-wide">
+          <p className="text-xs font-semibold text-primary uppercase tracking-wide">
             Módulo Desbloqueado
           </p>
           <p className="text-sm mt-0.5">{content.message}</p>
@@ -38,7 +38,7 @@ export default function MessageRenderer({ content }: Props) {
           </p>
           <p className="text-sm mt-0.5">{content.body}</p>
           {content.score !== undefined && (
-            <p className="text-xs text-[var(--muted-foreground)] mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Score: {content.score.toFixed(1)}/5.0
             </p>
           )}
@@ -49,7 +49,7 @@ export default function MessageRenderer({ content }: Props) {
 
   if (content.type === 'research_progress') {
     return (
-      <div className="flex items-center gap-2 p-2 rounded-md bg-[var(--muted)] mt-1">
+      <div className="flex items-center gap-2 p-2 rounded-md bg-muted mt-1">
         <div
           className={`w-2 h-2 rounded-full ${
             content.status === 'running'
@@ -59,7 +59,7 @@ export default function MessageRenderer({ content }: Props) {
               : 'bg-red-400'
           }`}
         />
-        <span className="text-xs text-[var(--muted-foreground)]">
+        <span className="text-xs text-muted-foreground">
           {content.lens}: {content.status === 'running' ? 'analisando...' : content.summary ?? content.status}
         </span>
       </div>
@@ -76,12 +76,12 @@ export default function MessageRenderer({ content }: Props) {
           </p>
         </div>
         <p className="text-sm font-medium">{content.title}</p>
-        <p className="text-xs text-[var(--muted-foreground)] mt-1">{content.description}</p>
+        <p className="text-xs text-muted-foreground mt-1">{content.description}</p>
         <div className="flex gap-2 mt-3">
-          <button className="px-3 py-1.5 rounded-md bg-[var(--primary)] text-white text-xs font-medium hover:opacity-90 transition-opacity">
+          <button className="px-3 py-1.5 rounded-md bg-primary text-white text-xs font-medium hover:opacity-90 transition-opacity">
             Aprovar
           </button>
-          <button className="px-3 py-1.5 rounded-md bg-[var(--muted)] text-[var(--muted-foreground)] text-xs hover:text-[var(--foreground)] transition-colors">
+          <button className="px-3 py-1.5 rounded-md bg-muted text-muted-foreground text-xs hover:text-foreground transition-colors">
             Rejeitar
           </button>
         </div>

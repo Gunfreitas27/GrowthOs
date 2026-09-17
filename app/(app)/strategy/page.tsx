@@ -74,16 +74,16 @@ export default async function StrategyPage() {
     <div className="p-6 max-w-5xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-9 h-9 rounded-xl bg-[var(--primary)]/20 flex items-center justify-center">
-          <Target size={18} className="text-[var(--primary)]" />
+        <div className="w-9 h-9 rounded-xl bg-primary/20 flex items-center justify-center">
+          <Target size={18} className="text-primary" />
         </div>
         <div>
           <h1 className="text-2xl font-semibold">Estratégia de Growth</h1>
-          <p className="text-sm text-[var(--muted-foreground)]">
+          <p className="text-sm text-muted-foreground">
             Plano de 90 dias gerado pelo advisory-board + hormozi-squad
           </p>
         </div>
-        <span className="ml-auto text-xs px-2.5 py-1 rounded-full bg-[var(--surface-strong)] text-[var(--primary)] border border-[var(--border)]">
+        <span className="ml-auto text-xs px-2.5 py-1 rounded-full bg-surface-strong text-primary border border-border">
           Gerado por IA
         </span>
       </div>
@@ -96,43 +96,43 @@ export default async function StrategyPage() {
           { label: 'Estratégia Porter', value: STRATEGY_PLAN.diagnosis.genericStrategy },
           { label: 'Budget', value: (bc as Record<string, unknown>).budget as string ?? 'R$20–100k' },
         ].map((item) => (
-          <div key={item.label} className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4">
-            <p className="text-xs text-[var(--muted-foreground)] mb-1">{item.label}</p>
+          <div key={item.label} className="rounded-xl border border-border bg-card p-4">
+            <p className="text-xs text-muted-foreground mb-1">{item.label}</p>
             <p className="text-sm font-semibold">{item.value}</p>
           </div>
         ))}
       </div>
 
       {/* Unfair Advantage */}
-      <div className="rounded-xl border border-[var(--primary)]/30 bg-[var(--primary)]/5 p-5 mb-6 flex items-start gap-3">
-        <Lightbulb size={18} className="text-[var(--primary)] mt-0.5 shrink-0" />
+      <div className="rounded-xl border border-primary/30 bg-primary/5 p-5 mb-6 flex items-start gap-3">
+        <Lightbulb size={18} className="text-primary mt-0.5 shrink-0" />
         <div>
-          <p className="text-xs font-semibold text-[var(--primary)] uppercase tracking-wide mb-1">Unfair Advantage</p>
+          <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-1">Unfair Advantage</p>
           <p className="text-sm">{STRATEGY_PLAN.diagnosis.unfairAdvantage}</p>
-          <p className="text-xs text-[var(--muted-foreground)] mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             Identificado pelo advisory-board (Peter Thiel: contrarian competitive moat)
           </p>
         </div>
       </div>
 
       {/* 90-Day Plan */}
-      <h2 className="text-sm font-semibold uppercase tracking-widest text-[var(--muted-foreground)] mb-4">
+      <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground mb-4">
         Plano de 90 Dias
       </h2>
       <div className="grid grid-cols-3 gap-4 mb-8">
         {[STRATEGY_PLAN.sprint1, STRATEGY_PLAN.sprint2, STRATEGY_PLAN.sprint3].map((sprint, i) => (
-          <div key={i} className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
+          <div key={i} className="rounded-xl border border-border bg-card p-5">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-6 rounded-full bg-[var(--primary)] text-white text-xs flex items-center justify-center font-bold shrink-0">
+              <div className="w-6 h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold shrink-0">
                 {i + 1}
               </div>
               <p className="text-sm font-semibold">{sprint.label}</p>
             </div>
-            <p className="text-xs text-[var(--primary)] mb-3">{sprint.framework}</p>
+            <p className="text-xs text-primary mb-3">{sprint.framework}</p>
             <ul className="space-y-2">
               {sprint.actions.map((action, j) => (
-                <li key={j} className="flex items-start gap-2 text-xs text-[var(--muted-foreground)]">
-                  <ChevronRight size={12} className="mt-0.5 shrink-0 text-[var(--primary)]" />
+                <li key={j} className="flex items-start gap-2 text-xs text-muted-foreground">
+                  <ChevronRight size={12} className="mt-0.5 shrink-0 text-primary" />
                   {action}
                 </li>
               ))}
@@ -142,32 +142,32 @@ export default async function StrategyPage() {
       </div>
 
       {/* Opportunities from Gaps */}
-      <h2 className="text-sm font-semibold uppercase tracking-widest text-[var(--muted-foreground)] mb-4">
+      <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground mb-4">
         Oportunidades Priorizadas por Impacto
       </h2>
-      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden">
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[var(--border)]">
-              <th className="text-left px-4 py-3 text-xs text-[var(--muted-foreground)] font-medium">Dimensão</th>
-              <th className="text-left px-4 py-3 text-xs text-[var(--muted-foreground)] font-medium">Score atual</th>
-              <th className="text-left px-4 py-3 text-xs text-[var(--muted-foreground)] font-medium">Ação recomendada</th>
-              <th className="text-left px-4 py-3 text-xs text-[var(--muted-foreground)] font-medium">ROI esperado</th>
+            <tr className="border-b border-border">
+              <th className="text-left px-4 py-3 text-xs text-muted-foreground font-medium">Dimensão</th>
+              <th className="text-left px-4 py-3 text-xs text-muted-foreground font-medium">Score atual</th>
+              <th className="text-left px-4 py-3 text-xs text-muted-foreground font-medium">Ação recomendada</th>
+              <th className="text-left px-4 py-3 text-xs text-muted-foreground font-medium">ROI esperado</th>
             </tr>
           </thead>
           <tbody>
             {STRATEGY_PLAN.opportunities.map((opp, i) => (
-              <tr key={i} className="border-b border-[var(--border)] last:border-0">
+              <tr key={i} className="border-b border-border last:border-0">
                 <td className="px-4 py-3 font-medium">{DIMENSION_LABELS[opp.dimension]}</td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-16 h-1.5 rounded-full bg-[var(--surface-strong)]">
+                    <div className="w-16 h-1.5 rounded-full bg-surface-strong">
                       <div className="h-full rounded-full bg-red-400" style={{ width: `${(opp.score / 5) * 100}%` }} />
                     </div>
-                    <span className="text-[var(--muted-foreground)]">{opp.score}</span>
+                    <span className="text-muted-foreground">{opp.score}</span>
                   </div>
                 </td>
-                <td className="px-4 py-3 text-[var(--muted-foreground)]">{opp.action}</td>
+                <td className="px-4 py-3 text-muted-foreground">{opp.action}</td>
                 <td className="px-4 py-3">
                   <span className={`text-xs px-2 py-0.5 rounded-full ${
                     opp.roi === 'Alto'
@@ -183,7 +183,7 @@ export default async function StrategyPage() {
         </table>
       </div>
 
-      <p className="text-xs text-[var(--muted-foreground)] mt-4 text-center">
+      <p className="text-xs text-muted-foreground mt-4 text-center">
         Estratégia gerada por <strong>advisory-board.skill</strong> (Dalio/Munger/Thiel) + <strong>hormozi-squad.skill</strong> (CLOSER framework, Core 4)
       </p>
     </div>

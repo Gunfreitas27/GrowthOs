@@ -47,7 +47,7 @@ export default async function OverviewPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-semibold">Growth Maturity Dashboard</h1>
-        <p className="text-[var(--muted-foreground)] text-sm mt-1">
+        <p className="text-muted-foreground text-sm mt-1">
           Diagnóstico de maturidade em {showCommunity ? 7 : 6} dimensões de crescimento
         </p>
       </div>
@@ -57,47 +57,47 @@ export default async function OverviewPage() {
           (lib/agents/generate-executive-summary.ts), not something the user
           has to go ask for in chat. */}
       {executiveSummary && (
-        <div className="rounded-xl border border-[var(--primary)]/30 bg-[var(--primary)]/5 p-6 mb-6">
+        <div className="rounded-xl border border-primary/30 bg-primary/5 p-6 mb-6">
           <div className="flex items-center gap-2 mb-3">
-            <Sparkles size={15} className="text-[var(--primary)]" />
+            <Sparkles size={15} className="text-primary" />
             <h2 className="text-sm font-semibold">O que fazer agora</h2>
           </div>
-          <p className="text-sm text-[var(--foreground)] leading-relaxed">{executiveSummary}</p>
+          <p className="text-sm text-foreground leading-relaxed">{executiveSummary}</p>
         </div>
       )}
 
       {/* Radar + Score */}
       <div className="grid grid-cols-3 gap-6 mb-8">
-        <div className="col-span-2 rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
+        <div className="col-span-2 rounded-xl border border-border bg-card p-6">
           <MaturityRadar scores={typedScores} showCommunity={showCommunity} />
         </div>
 
         <div className="flex flex-col gap-4">
           {/* Overall Score */}
-          <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5 flex flex-col items-center justify-center">
+          <div className="rounded-xl border border-border bg-card p-5 flex flex-col items-center justify-center">
             {avgScore !== null ? (
               <>
-                <p className="text-xs uppercase tracking-widest text-[var(--muted-foreground)] mb-2">
+                <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
                   Score Geral
                 </p>
-                <p className="text-5xl font-bold text-[var(--primary)]">
+                <p className="text-5xl font-bold text-primary">
                   {avgScore.toFixed(1)}
                 </p>
-                <p className="text-xs text-[var(--muted-foreground)] mt-1">de 5.0</p>
-                <div className="w-full mt-4 h-2 rounded-full bg-[var(--surface-strong)]">
+                <p className="text-xs text-muted-foreground mt-1">de 5.0</p>
+                <div className="w-full mt-4 h-2 rounded-full bg-surface-strong">
                   <div
-                    className="h-full rounded-full bg-[var(--primary)] transition-all duration-700"
+                    className="h-full rounded-full bg-primary transition-all duration-700"
                     style={{ width: `${(avgScore / 5) * 100}%` }}
                   />
                 </div>
               </>
             ) : (
               <>
-                <p className="text-xs uppercase tracking-widest text-[var(--muted-foreground)] mb-2">
+                <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
                   Score Geral
                 </p>
-                <p className="text-4xl font-bold text-[var(--muted-foreground)]">—</p>
-                <p className="text-xs text-[var(--muted-foreground)] mt-2 text-center">
+                <p className="text-4xl font-bold text-muted-foreground">—</p>
+                <p className="text-xs text-muted-foreground mt-2 text-center">
                   Complete o diagnóstico
                 </p>
               </>
@@ -105,12 +105,12 @@ export default async function OverviewPage() {
           </div>
 
           {/* Unlocked modules count */}
-          <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
-            <p className="text-xs uppercase tracking-widest text-[var(--muted-foreground)] mb-1">
+          <div className="rounded-xl border border-border bg-card p-5">
+            <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">
               Módulos ativos
             </p>
             <p className="text-3xl font-bold">{unlockedModules.length}</p>
-            <p className="text-xs text-[var(--muted-foreground)] mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               de 10 disponíveis
             </p>
           </div>
@@ -118,14 +118,14 @@ export default async function OverviewPage() {
           {/* Market sizing — estimated by AI, never asked in onboarding
               (see lib/business-context/estimate-market-sizing.ts) */}
           {(tamSamSom || northStar) && (
-            <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
-              <p className="text-xs uppercase tracking-widest text-[var(--muted-foreground)] mb-2">
+            <div className="rounded-xl border border-border bg-card p-5">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
                 Mercado (estimativa da IA)
               </p>
-              {tamSamSom && <p className="text-sm text-[var(--foreground)]">{tamSamSom}</p>}
+              {tamSamSom && <p className="text-sm text-foreground">{tamSamSom}</p>}
               {northStar && (
-                <p className="text-xs text-[var(--muted-foreground)] mt-2">
-                  Métrica-guia sugerida: <span className="text-[var(--foreground)]">{northStar}</span>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Métrica-guia sugerida: <span className="text-foreground">{northStar}</span>
                 </p>
               )}
             </div>
@@ -135,7 +135,7 @@ export default async function OverviewPage() {
 
       {/* Gaps & Strengths */}
       {hasDiagnostic && (
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6">
+        <div className="rounded-xl border border-border bg-card p-6">
           <h2 className="text-sm font-semibold mb-4">Análise de Dimensões</h2>
           <MaturityGapList scores={detailedScores} />
         </div>

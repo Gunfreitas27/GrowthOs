@@ -42,13 +42,13 @@ export default function QuestionnaireCard({
   };
 
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6 max-w-2xl">
+    <div className="rounded-xl border border-border bg-card p-6 max-w-2xl">
       {/* Header — no framework jargon exposed here on purpose: the person
           filling this out is a business owner/manager, not a growth
           specialist, and "Kotler: Market Analysis" means nothing to them. */}
       <div className="mb-5">
         <h2 className="text-lg font-semibold">{section.title}</h2>
-        <p className="text-sm text-[var(--muted-foreground)] mt-1">{section.description}</p>
+        <p className="text-sm text-muted-foreground mt-1">{section.description}</p>
       </div>
 
       {/* Questions */}
@@ -63,7 +63,7 @@ export default function QuestionnaireCard({
                 placeholder={q.placeholder}
                 value={(answers[q.id] as string) ?? ''}
                 onChange={(e) => setAnswer(q.id, e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-[var(--muted)] border border-[var(--border)] text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] focus:outline-none focus:border-[var(--primary)] transition-colors"
+                className="w-full px-3 py-2 rounded-lg bg-muted border border-border text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
               />
             ) : q.type === 'select' ? (
               <div className="flex flex-wrap gap-2">
@@ -74,8 +74,8 @@ export default function QuestionnaireCard({
                     className={cn(
                       'px-3 py-1.5 rounded-lg text-sm border transition-colors',
                       answers[q.id] === opt
-                        ? 'bg-[var(--primary)] border-[var(--primary)] text-white'
-                        : 'bg-[var(--muted)] border-[var(--border)] text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
+                        ? 'bg-primary border-primary text-white'
+                        : 'bg-muted border-border text-muted-foreground hover:text-foreground'
                     )}
                   >
                     {opt}
@@ -99,8 +99,8 @@ export default function QuestionnaireCard({
                       className={cn(
                         'px-3 py-1.5 rounded-lg text-sm border transition-colors flex items-center gap-1.5',
                         selected
-                          ? 'bg-[var(--primary)] border-[var(--primary)] text-white'
-                          : 'bg-[var(--muted)] border-[var(--border)] text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
+                          ? 'bg-primary border-primary text-white'
+                          : 'bg-muted border-border text-muted-foreground hover:text-foreground'
                       )}
                     >
                       {selected && <Check size={12} />}
@@ -118,7 +118,7 @@ export default function QuestionnaireCard({
       <button
         onClick={handleSubmit}
         disabled={isSubmitting}
-        className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--primary)] text-white text-sm font-medium disabled:opacity-60 hover:opacity-90 transition-opacity"
+        className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white text-sm font-medium disabled:opacity-60 hover:opacity-90 transition-opacity"
       >
         {isSubmitting ? 'Processando...' : 'Continuar'}
         {!isSubmitting && <ChevronRight size={14} />}

@@ -58,17 +58,17 @@ export default async function AnalyticsPage() {
     <div className="p-6 max-w-5xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-9 h-9 rounded-xl bg-[var(--surface-strong)] flex items-center justify-center">
-          <BarChart2 size={18} className="text-[var(--primary)]" />
+        <div className="w-9 h-9 rounded-xl bg-surface-strong flex items-center justify-center">
+          <BarChart2 size={18} className="text-primary" />
         </div>
         <div>
           <h1 className="text-2xl font-semibold">Analytics & Atribuição</h1>
-          <p className="text-sm text-[var(--muted-foreground)]">
+          <p className="text-sm text-muted-foreground">
             Analisado por data-squad (Kaushik + Peter Fader + Sean Ellis)
           </p>
         </div>
         <div className="ml-auto flex items-center gap-2">
-          <span className="text-xs text-[var(--muted-foreground)]">Score de maturidade</span>
+          <span className="text-xs text-muted-foreground">Score de maturidade</span>
           <span className="text-sm font-bold text-amber-600">{analyticsScore.toFixed(1)}/5.0</span>
         </div>
       </div>
@@ -76,8 +76,8 @@ export default async function AnalyticsPage() {
       {/* North Star + KPIs */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         {/* North Star destacado */}
-        <div className="rounded-xl border border-[var(--primary)]/30 bg-[var(--primary)]/5 p-5">
-          <p className="text-xs text-[var(--primary)] font-medium uppercase tracking-wide mb-1">
+        <div className="rounded-xl border border-primary/30 bg-primary/5 p-5">
+          <p className="text-xs text-primary font-medium uppercase tracking-wide mb-1">
             North Star Metric
           </p>
           <p className="text-3xl font-bold">{MOCK_METRICS.north_star.value}</p>
@@ -85,15 +85,15 @@ export default async function AnalyticsPage() {
             <TrendingUp size={12} className="text-green-600" />
             <span className="text-xs text-green-600">{MOCK_METRICS.north_star.change} MoM</span>
           </div>
-          <p className="text-xs text-[var(--muted-foreground)] mt-2">{MOCK_METRICS.north_star.label}</p>
+          <p className="text-xs text-muted-foreground mt-2">{MOCK_METRICS.north_star.label}</p>
         </div>
 
         {/* Other KPIs */}
         <div className="col-span-2 grid grid-cols-3 gap-3">
           {[MOCK_METRICS.ltv_cac, MOCK_METRICS.churn, MOCK_METRICS.nrr,
             MOCK_METRICS.cac, MOCK_METRICS.ltv].map((m) => (
-            <div key={m.label} className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4">
-              <p className="text-xs text-[var(--muted-foreground)] mb-1">{m.label}</p>
+            <div key={m.label} className="rounded-xl border border-border bg-card p-4">
+              <p className="text-xs text-muted-foreground mb-1">{m.label}</p>
               <p className="text-xl font-bold">{m.value}</p>
               <div className="flex items-center gap-1 mt-0.5">
                 {m.trend === 'up' ? (
@@ -103,11 +103,11 @@ export default async function AnalyticsPage() {
                 ) : m.trend === 'down-bad' ? (
                   <TrendingDown size={10} className="text-red-600" />
                 ) : (
-                  <Minus size={10} className="text-[var(--muted-foreground)]" />
+                  <Minus size={10} className="text-muted-foreground" />
                 )}
                 <span className={`text-xs ${
                   m.trend === 'up' || m.trend === 'down-good' ? 'text-green-600' :
-                  m.trend === 'down-bad' ? 'text-red-600' : 'text-[var(--muted-foreground)]'
+                  m.trend === 'down-bad' ? 'text-red-600' : 'text-muted-foreground'
                 }`}>
                   {m.change}
                 </span>
@@ -120,8 +120,8 @@ export default async function AnalyticsPage() {
       {/* Funnel + Channels */}
       <div className="grid grid-cols-2 gap-6 mb-6">
         {/* Conversion Funnel */}
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
-          <h2 className="text-xs uppercase tracking-widest text-[var(--muted-foreground)] mb-4">
+        <div className="rounded-xl border border-border bg-card p-5">
+          <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-4">
             Funil de Conversão (30d)
           </h2>
           <div className="space-y-2">
@@ -129,13 +129,13 @@ export default async function AnalyticsPage() {
               <div key={stage.stage}>
                 <div className="flex justify-between text-xs mb-1">
                   <span className="font-medium">{stage.stage}</span>
-                  <span className="text-[var(--muted-foreground)]">
+                  <span className="text-muted-foreground">
                     {stage.value.toLocaleString('pt-BR')} ({stage.pct}%)
                   </span>
                 </div>
-                <div className="h-6 rounded-md bg-[var(--surface-strong)] relative overflow-hidden">
+                <div className="h-6 rounded-md bg-surface-strong relative overflow-hidden">
                   <div
-                    className="h-full rounded-md bg-[var(--primary)] transition-all duration-700"
+                    className="h-full rounded-md bg-primary transition-all duration-700"
                     style={{ width: `${stage.pct}%`, opacity: 1 - i * 0.12 }}
                   />
                 </div>
@@ -145,8 +145,8 @@ export default async function AnalyticsPage() {
         </div>
 
         {/* Channel Attribution */}
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
-          <h2 className="text-xs uppercase tracking-widest text-[var(--muted-foreground)] mb-4">
+        <div className="rounded-xl border border-border bg-card p-5">
+          <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-4">
             Atribuição por Canal
           </h2>
           <div className="space-y-3">
@@ -154,25 +154,25 @@ export default async function AnalyticsPage() {
               <div key={ch.name}>
                 <div className="flex justify-between text-xs mb-1">
                   <span className="font-medium">{ch.name}</span>
-                  <span className="text-[var(--muted-foreground)]">{ch.conversions} conv · CAC {ch.cac}</span>
+                  <span className="text-muted-foreground">{ch.conversions} conv · CAC {ch.cac}</span>
                 </div>
-                <div className="h-1.5 rounded-full bg-[var(--surface-strong)]">
+                <div className="h-1.5 rounded-full bg-surface-strong">
                   <div
-                    className="h-full rounded-full bg-[var(--primary)] transition-all duration-700"
+                    className="h-full rounded-full bg-primary transition-all duration-700"
                     style={{ width: `${ch.contribution}%` }}
                   />
                 </div>
               </div>
             ))}
           </div>
-          <p className="text-[10px] text-[var(--muted-foreground)] mt-4">
+          <p className="text-[10px] text-muted-foreground mt-4">
             Modelo See-Think-Do-Care (Avinash Kaushik) — data-squad.skill
           </p>
         </div>
       </div>
 
       {/* AI Insights */}
-      <h2 className="text-sm font-semibold uppercase tracking-widest text-[var(--muted-foreground)] mb-3">
+      <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground mb-3">
         Insights do data-squad
       </h2>
       <div className="space-y-3">
@@ -194,13 +194,13 @@ export default async function AnalyticsPage() {
               <p className={`text-sm font-semibold ${insight.type === 'gap' ? 'text-red-700' : 'text-green-700'}`}>
                 {insight.title}
               </p>
-              <p className="text-xs text-[var(--muted-foreground)] mt-0.5">{insight.body}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{insight.body}</p>
             </div>
           </div>
         ))}
       </div>
 
-      <p className="text-xs text-[var(--muted-foreground)] mt-6 text-center">
+      <p className="text-xs text-muted-foreground mt-6 text-center">
         Análise gerada por <strong>data-squad.skill</strong> — Avinash Kaushik (See-Think-Do-Care) · Peter Fader (CLV) · Sean Ellis (Growth Metrics) · Nick Mehta (NRR)
       </p>
     </div>

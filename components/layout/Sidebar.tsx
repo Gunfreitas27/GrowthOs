@@ -105,12 +105,12 @@ export default function Sidebar({ visibleModules, userEmail, signOutAction }: Si
 
   return (
     <aside
-      className="flex flex-col h-screen border-r border-[var(--border)] bg-[var(--surface-soft)]"
+      className="flex flex-col h-screen border-r border-border bg-surface-soft"
       style={{ width: 'var(--sidebar-width)' }}
     >
       {/* Logo */}
-      <div className="flex items-center gap-2 px-4 py-5 border-b border-[var(--border)]">
-        <div className="w-7 h-7 rounded-lg bg-[var(--primary)] flex items-center justify-center">
+      <div className="flex items-center gap-2 px-4 py-5 border-b border-border">
+        <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
           <Sparkles size={14} className="text-white" />
         </div>
         <span className="font-semibold text-sm tracking-wide">Flywell</span>
@@ -129,8 +129,8 @@ export default function Sidebar({ visibleModules, userEmail, signOutAction }: Si
               className={cn(
                 'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm mb-0.5 transition-colors',
                 active
-                  ? 'bg-[var(--primary)] text-white'
-                  : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-strong)]'
+                  ? 'bg-primary text-white'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-surface-strong'
               )}
             >
               {item.icon}
@@ -145,7 +145,7 @@ export default function Sidebar({ visibleModules, userEmail, signOutAction }: Si
             found by watching a real first-time login: even knowing the
             codebase, "where are the other tools?" was the first reaction. */}
         <div className="px-3 py-2 mt-2 mb-1">
-          <span className="text-[10px] uppercase tracking-widest text-[var(--muted-foreground)]">
+          <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
             Módulos
           </span>
         </div>
@@ -157,7 +157,7 @@ export default function Sidebar({ visibleModules, userEmail, signOutAction }: Si
             return (
               <div
                 key={key}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm mb-0.5 text-[var(--muted-foreground)] opacity-45 cursor-default select-none"
+                className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm mb-0.5 text-muted-foreground opacity-45 cursor-default select-none"
                 title="Desbloqueia conforme seu diagnóstico de maturidade avança"
               >
                 {item.icon}
@@ -175,8 +175,8 @@ export default function Sidebar({ visibleModules, userEmail, signOutAction }: Si
               className={cn(
                 'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm mb-0.5 transition-colors',
                 active
-                  ? 'bg-[var(--primary)] text-white'
-                  : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--surface-strong)]'
+                  ? 'bg-primary text-white'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-surface-strong'
               )}
             >
               {item.icon}
@@ -187,15 +187,15 @@ export default function Sidebar({ visibleModules, userEmail, signOutAction }: Si
       </nav>
 
       {/* Bottom: session info */}
-      <div className="px-4 py-3 border-t border-[var(--border)] flex items-center justify-between gap-2">
-        <p className="text-xs text-[var(--muted-foreground)] truncate" title={userEmail ?? undefined}>
+      <div className="px-4 py-3 border-t border-border flex items-center justify-between gap-2">
+        <p className="text-xs text-muted-foreground truncate" title={userEmail ?? undefined}>
           {userEmail ?? 'Workspace (modo mock)'}
         </p>
         {signOutAction && (
           <form action={signOutAction}>
             <button
               type="submit"
-              className="text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors shrink-0"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0"
             >
               Sair
             </button>
