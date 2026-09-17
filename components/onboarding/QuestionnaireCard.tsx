@@ -1,8 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronRight, Check } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { ChevronRight } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { TogglePill } from '@/components/ui/toggle-pill';
+import { Button } from '@/components/ui/button';
 
 export interface QuestionnaireSection {
   key: string;
@@ -42,12 +45,12 @@ export default function QuestionnaireCard({
   };
 
   return (
-    <div className="rounded-xl border border-border bg-card p-6 max-w-2xl">
+    <Card className="p-6 max-w-2xl">
       {/* Header — no framework jargon exposed here on purpose: the person
           filling this out is a business owner/manager, not a growth
           specialist, and "Kotler: Market Analysis" means nothing to them. */}
       <div className="mb-5">
-        <h2 className="text-lg font-semibold">{section.title}</h2>
+        <h2 className="font-display text-lg font-semibold text-foreground">{section.title}</h2>
         <p className="text-sm text-muted-foreground mt-1">{section.description}</p>
       </div>
 
@@ -55,31 +58,25 @@ export default function QuestionnaireCard({
       <div className="space-y-4 mb-6">
         {section.questions.map((q) => (
           <div key={q.id}>
-            <label className="block text-sm font-medium mb-1.5">{q.label}</label>
+            <label className="block text-sm font-medium mb-1.5 text-foreground">{q.label}</label>
 
             {q.type === 'text' || q.type === 'url' ? (
-              <input
+              <Input
                 type={q.type === 'url' ? 'url' : 'text'}
                 placeholder={q.placeholder}
                 value={(answers[q.id] as string) ?? ''}
                 onChange={(e) => setAnswer(q.id, e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-muted border border-border text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
               />
             ) : q.type === 'select' ? (
               <div className="flex flex-wrap gap-2">
                 {q.options?.map((opt) => (
-                  <button
+                  <TogglePill
                     key={opt}
+                    selected={answers[q.id] === opt}
                     onClick={() => setAnswer(q.id, opt)}
-                    className={cn(
-                      'px-3 py-1.5 rounded-lg text-sm border transition-colors',
-                      answers[q.id] === opt
-                        ? 'bg-primary border-primary text-white'
-                        : 'bg-muted border-border text-muted-foreground hover:text-foreground'
-                    )}
                   >
                     {opt}
-                  </button>
+                  </TogglePill>
                 ))}
               </div>
             ) : q.type === 'multiselect' ? (
@@ -87,8 +84,9 @@ export default function QuestionnaireCard({
                 {q.options?.map((opt) => {
                   const selected = ((answers[q.id] as string[]) ?? []).includes(opt);
                   return (
-                    <button
+                    <TogglePill
                       key={opt}
+                      selected={selected}
                       onClick={() => {
                         const current = (answers[q.id] as string[]) ?? [];
                         setAnswer(
@@ -96,16 +94,9 @@ export default function QuestionnaireCard({
                           selected ? current.filter((v) => v !== opt) : [...current, opt]
                         );
                       }}
-                      className={cn(
-                        'px-3 py-1.5 rounded-lg text-sm border transition-colors flex items-center gap-1.5',
-                        selected
-                          ? 'bg-primary border-primary text-white'
-                          : 'bg-muted border-border text-muted-foreground hover:text-foreground'
-                      )}
                     >
-                      {selected && <Check size={12} />}
                       {opt}
-                    </button>
+                    </TogglePill>
                   );
                 })}
               </div>
@@ -115,14 +106,10 @@ export default function QuestionnaireCard({
       </div>
 
       {/* Submit */}
-      <button
-        onClick={handleSubmit}
-        disabled={isSubmitting}
-        className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white text-sm font-medium disabled:opacity-60 hover:opacity-90 transition-opacity"
-      >
+      <Button onClick={handleSubmit} disabled={isSubmitting}>
         {isSubmitting ? 'Processando...' : 'Continuar'}
         {!isSubmitting && <ChevronRight size={14} />}
-      </button>
-    </div>
+      </Button>
+    </Card>
   );
 }

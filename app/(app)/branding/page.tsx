@@ -2,13 +2,17 @@ import { Palette, BookOpen, Star, Mic, ExternalLink } from 'lucide-react';
 import { resolveBrandContext } from '@/lib/mock/resolver';
 import { getCurrentWorkspaceId } from '@/lib/workspace/current';
 
+// Cor sólida por nível, opacidade decrescente para diferenciar as 6 camadas
+// da pirâmide sem sair da paleta do design system (antes: hues Tailwind
+// hardcoded — red/orange/yellow/blue/indigo/purple — que não existem no
+// token set atual e quebravam contra a nova identidade visual).
 const CBBE_SCORES = [
-  { level: 'Brand Salience', description: 'Quem você é?', score: 2.5, color: 'bg-red-400' },
-  { level: 'Brand Performance', description: 'O que você faz?', score: 3.8, color: 'bg-orange-400' },
-  { level: 'Brand Imagery', description: 'O que você representa?', score: 3.0, color: 'bg-yellow-400' },
-  { level: 'Brand Judgments', description: 'O que penso de você?', score: 3.5, color: 'bg-blue-400' },
-  { level: 'Brand Feelings', description: 'O que sinto por você?', score: 2.8, color: 'bg-indigo-400' },
-  { level: 'Brand Resonance', description: 'Qual nossa conexão?', score: 2.2, color: 'bg-purple-400' },
+  { level: 'Brand Salience', description: 'Quem você é?', score: 2.5, color: 'bg-primary' },
+  { level: 'Brand Performance', description: 'O que você faz?', score: 3.8, color: 'bg-primary/85' },
+  { level: 'Brand Imagery', description: 'O que você representa?', score: 3.0, color: 'bg-primary/70' },
+  { level: 'Brand Judgments', description: 'O que penso de você?', score: 3.5, color: 'bg-primary/55' },
+  { level: 'Brand Feelings', description: 'O que sinto por você?', score: 2.8, color: 'bg-primary/40' },
+  { level: 'Brand Resonance', description: 'Qual nossa conexão?', score: 2.2, color: 'bg-primary/30' },
 ];
 
 export default async function BrandingPage() {

@@ -1,5 +1,9 @@
 import MaturityRadar from '@/components/overview/MaturityRadar';
 import MaturityGapList from '@/components/overview/MaturityGapList';
+import { ExecutiveSummaryHero } from '@/components/overview/ExecutiveSummaryHero';
+import { Card } from '@/components/ui/card';
+import { ProgressBar } from '@/components/ui/progress-bar';
+import { cn } from '@/lib/utils';
 import {
   resolveMaturityScores,
   resolveMaturityScoresDetailed,
@@ -8,7 +12,6 @@ import {
 } from '@/lib/mock/resolver';
 import type { MaturityDimension } from '@/lib/agents/types';
 import { getCurrentWorkspaceId } from '@/lib/workspace/current';
-import { Sparkles } from 'lucide-react';
 
 async function getPageData() {
   try {
@@ -46,7 +49,9 @@ export default async function OverviewPage() {
     <div className="p-6 max-w-5xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold">Growth Maturity Dashboard</h1>
+        <h1 className="font-display text-2xl font-semibold text-foreground">
+          Growth Maturity Dashboard
+        </h1>
         <p className="text-muted-foreground text-sm mt-1">
           Diagnóstico de maturidade em {showCommunity ? 7 : 6} dimensões de crescimento
         </p>
@@ -55,40 +60,31 @@ export default async function OverviewPage() {
       {/* What to do now — the answer to "o que fazer depois do diagnóstico":
           generated once by the advisory board right when scoring finishes
           (lib/agents/generate-executive-summary.ts), not something the user
-          has to go ask for in chat. */}
-      {executiveSummary && (
-        <div className="rounded-xl border border-primary/30 bg-primary/5 p-6 mb-6">
-          <div className="flex items-center gap-2 mb-3">
-            <Sparkles size={15} className="text-primary" />
-            <h2 className="text-sm font-semibold">O que fazer agora</h2>
-          </div>
-          <p className="text-sm text-foreground leading-relaxed">{executiveSummary}</p>
-        </div>
-      )}
+          has to go ask for in chat. Treated as the centerpiece of the page,
+          not a tinted callout box. */}
+      {executiveSummary && <ExecutiveSummaryHero summary={executiveSummary} />}
 
       {/* Radar + Score */}
       <div className="grid grid-cols-3 gap-6 mb-8">
-        <div className="col-span-2 rounded-xl border border-border bg-card p-6">
+        <Card className="col-span-2 p-6">
           <MaturityRadar scores={typedScores} showCommunity={showCommunity} />
-        </div>
+        </Card>
 
         <div className="flex flex-col gap-4">
-          {/* Overall Score */}
-          <div className="rounded-xl border border-border bg-card p-5 flex flex-col items-center justify-center">
+          {/* Overall Score — hero treatment: biggest number on the page,
+              the one figure most worth a glance from the dashboard. */}
+          <Card className="p-6 flex flex-col items-center justify-center text-center">
             {avgScore !== null ? (
               <>
                 <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
                   Score Geral
                 </p>
-                <p className="text-5xl font-bold text-primary">
+                <p className="font-display text-5xl font-semibold text-primary">
                   {avgScore.toFixed(1)}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">de 5.0</p>
-                <div className="w-full mt-4 h-2 rounded-full bg-surface-strong">
-                  <div
-                    className="h-full rounded-full bg-primary transition-all duration-700"
-                    style={{ width: `${(avgScore / 5) * 100}%` }}
-                  />
+                <div className="w-full mt-4">
+                  <ProgressBar value={avgScore} max={5} />
                 </div>
               </>
             ) : (
@@ -96,29 +92,43 @@ export default async function OverviewPage() {
                 <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
                   Score Geral
                 </p>
-                <p className="text-4xl font-bold text-muted-foreground">—</p>
+                <p className="font-display text-4xl font-semibold text-muted-foreground">—</p>
                 <p className="text-xs text-muted-foreground mt-2 text-center">
                   Complete o diagnóstico
                 </p>
               </>
             )}
-          </div>
+          </Card>
 
-          {/* Unlocked modules count */}
-          <div className="rounded-xl border border-border bg-card p-5">
-            <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">
-              Módulos ativos
-            </p>
-            <p className="text-3xl font-bold">{unlockedModules.length}</p>
-            <p className="text-xs text-muted-foreground mt-1">
-              de 10 disponíveis
-            </p>
-          </div>
+          {/* Unlocked modules — a dot row instead of a second giant number,
+              so it doesn't read as a triplet clone of the score tile. */}
+          <Card className="p-5">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">
+                Módulos ativos
+              </p>
+              <span className="font-display text-lg font-semibold text-foreground">
+                {unlockedModules.length}
+                <span className="text-muted-foreground text-xs font-body">/10</span>
+              </span>
+            </div>
+            <div className="flex gap-1">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <span
+                  key={i}
+                  className={cn(
+                    'h-1.5 flex-1 rounded-full',
+                    i < unlockedModules.length ? 'bg-primary' : 'bg-surface-strong'
+                  )}
+                />
+              ))}
+            </div>
+          </Card>
 
           {/* Market sizing — estimated by AI, never asked in onboarding
               (see lib/business-context/estimate-market-sizing.ts) */}
           {(tamSamSom || northStar) && (
-            <div className="rounded-xl border border-border bg-card p-5">
+            <Card className="p-5">
               <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
                 Mercado (estimativa da IA)
               </p>
@@ -128,17 +138,19 @@ export default async function OverviewPage() {
                   Métrica-guia sugerida: <span className="text-foreground">{northStar}</span>
                 </p>
               )}
-            </div>
+            </Card>
           )}
         </div>
       </div>
 
       {/* Gaps & Strengths */}
       {hasDiagnostic && (
-        <div className="rounded-xl border border-border bg-card p-6">
-          <h2 className="text-sm font-semibold mb-4">Análise de Dimensões</h2>
+        <Card className="p-6">
+          <h2 className="font-display text-sm font-semibold mb-4 text-foreground">
+            Análise de Dimensões
+          </h2>
           <MaturityGapList scores={detailedScores} />
-        </div>
+        </Card>
       )}
 
       {/* CTA when no data — MaturityRadar's own empty state already offers

@@ -1,5 +1,7 @@
 import { signIn } from '@/auth';
 import { Logo } from '@/components/brand/Logo';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 function GoogleIcon() {
   return (
@@ -27,10 +29,12 @@ function GoogleIcon() {
 export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-surface-soft">
-      <div className="w-full max-w-sm p-8 rounded-2xl border border-border bg-card">
+      <Card className="w-full max-w-sm p-8">
         <div className="text-center mb-8">
           <Logo variant="full" size={32} className="justify-center mb-1" />
-          <p className="text-sm text-muted-foreground mt-2">Growth Orchestrator Platform</p>
+          <p className="text-sm text-muted-foreground mt-2">
+            Growth com dados reais, não com intuição.
+          </p>
         </div>
 
         <form
@@ -39,19 +43,16 @@ export default function LoginPage() {
             await signIn('google', { redirectTo: '/overview' });
           }}
         >
-          <button
-            type="submit"
-            className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-lg border border-border bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-          >
+          <Button type="submit" variant="secondary" className="w-full">
             <GoogleIcon />
             Entrar com Google
-          </button>
+          </Button>
         </form>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
           Primeiro acesso? Um workspace é criado automaticamente para você.
         </p>
-      </div>
+      </Card>
     </div>
   );
 }

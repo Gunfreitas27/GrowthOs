@@ -20,6 +20,7 @@ import {
 import { cn } from '@/lib/utils';
 import { MODULE_KEYS, type ModuleKey } from '@/lib/agents/types';
 import { Logo } from '@/components/brand/Logo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface ModuleState {
   moduleKey: string;
@@ -105,104 +106,109 @@ export default function Sidebar({ visibleModules, userEmail, signOutAction }: Si
   );
 
   return (
-    <aside
-      className="flex flex-col h-screen border-r border-border bg-surface-soft"
-      style={{ width: 'var(--sidebar-width)' }}
-    >
-      {/* Logo */}
-      <div className="flex items-center gap-2 px-4 py-5 border-b border-border">
-        <Logo variant="icon" size={22} className="text-primary" />
-        <span className="font-display font-semibold text-base tracking-tight text-foreground">
-          Flywell
-        </span>
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-3 px-2">
-        {/* Permanent items */}
-        {permanentItems.map((key) => {
-          const item = MODULE_CONFIG[key];
-          const active = pathname.startsWith(item.href);
-          return (
-            <Link
-              key={key}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm mb-0.5 transition-colors',
-                active
-                  ? 'bg-primary text-white'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-surface-strong'
-              )}
-            >
-              {item.icon}
-              {item.label}
-            </Link>
-          );
-        })}
-
-        {/* All 10 modules, always listed — locked ones show a lock icon
-            instead of disappearing. Hiding them entirely reads as "empty/
-            broken product" rather than "there's more here, unlock it" —
-            found by watching a real first-time login: even knowing the
-            codebase, "where are the other tools?" was the first reaction. */}
-        <div className="px-3 py-2 mt-2 mb-1">
-          <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-            Módulos
+    <TooltipProvider delayDuration={200}>
+      <aside
+        className="flex flex-col h-screen border-r border-border bg-surface-soft"
+        style={{ width: 'var(--sidebar-width)' }}
+      >
+        {/* Logo */}
+        <div className="flex items-center gap-2 px-4 py-5 border-b border-border">
+          <Logo variant="icon" size={22} className="text-primary" />
+          <span className="font-display font-semibold text-base tracking-tight text-foreground">
+            Flywell
           </span>
         </div>
-        {MODULE_KEYS.map((key) => {
-          const item = MODULE_CONFIG[key];
-          const unlocked = unlockedKeys.has(key);
 
-          if (!unlocked) {
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto py-3 px-2">
+          {/* Permanent items */}
+          {permanentItems.map((key) => {
+            const item = MODULE_CONFIG[key];
+            const active = pathname.startsWith(item.href);
             return (
-              <div
+              <Link
                 key={key}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm mb-0.5 text-muted-foreground opacity-45 cursor-default select-none"
-                title="Desbloqueia conforme seu diagnóstico de maturidade avança"
+                href={item.href}
+                className={cn(
+                  'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm mb-0.5 transition-colors',
+                  active
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-surface-strong'
+                )}
               >
                 {item.icon}
-                <span className="flex-1">{item.label}</span>
-                <Lock size={12} />
-              </div>
+                {item.label}
+              </Link>
             );
-          }
+          })}
 
-          const active = pathname.startsWith(item.href);
-          return (
-            <Link
-              key={key}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm mb-0.5 transition-colors',
-                active
-                  ? 'bg-primary text-white'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-surface-strong'
-              )}
-            >
-              {item.icon}
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
+          {/* All 10 modules, always listed — locked ones show a lock icon
+              instead of disappearing. Hiding them entirely reads as "empty/
+              broken product" rather than "there's more here, unlock it" —
+              found by watching a real first-time login: even knowing the
+              codebase, "where are the other tools?" was the first reaction. */}
+          <div className="px-3 py-2 mt-2 mb-1">
+            <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
+              Módulos
+            </span>
+          </div>
+          {MODULE_KEYS.map((key) => {
+            const item = MODULE_CONFIG[key];
+            const unlocked = unlockedKeys.has(key);
 
-      {/* Bottom: session info */}
-      <div className="px-4 py-3 border-t border-border flex items-center justify-between gap-2">
-        <p className="text-xs text-muted-foreground truncate" title={userEmail ?? undefined}>
-          {userEmail ?? 'Workspace (modo mock)'}
-        </p>
-        {signOutAction && (
-          <form action={signOutAction}>
-            <button
-              type="submit"
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0"
-            >
-              Sair
-            </button>
-          </form>
-        )}
-      </div>
-    </aside>
+            if (!unlocked) {
+              return (
+                <Tooltip key={key}>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm mb-0.5 text-muted-foreground opacity-45 cursor-default select-none">
+                      {item.icon}
+                      <span className="flex-1">{item.label}</span>
+                      <Lock size={12} />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    Desbloqueia conforme seu diagnóstico de maturidade avança
+                  </TooltipContent>
+                </Tooltip>
+              );
+            }
+
+            const active = pathname.startsWith(item.href);
+            return (
+              <Link
+                key={key}
+                href={item.href}
+                className={cn(
+                  'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm mb-0.5 transition-colors',
+                  active
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-surface-strong'
+                )}
+              >
+                {item.icon}
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Bottom: session info */}
+        <div className="px-4 py-3 border-t border-border flex items-center justify-between gap-2">
+          <p className="text-xs text-muted-foreground truncate" title={userEmail ?? undefined}>
+            {userEmail ?? 'Workspace (modo mock)'}
+          </p>
+          {signOutAction && (
+            <form action={signOutAction}>
+              <button
+                type="submit"
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors shrink-0"
+              >
+                Sair
+              </button>
+            </form>
+          )}
+        </div>
+      </aside>
+    </TooltipProvider>
   );
 }

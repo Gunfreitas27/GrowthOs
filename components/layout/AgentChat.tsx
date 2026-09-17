@@ -1,10 +1,14 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, ChevronRight, Bot } from 'lucide-react';
+import { Send, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { MessageContent, SSEChunk } from '@/lib/agents/types';
 import MessageRenderer from '@/components/chat/MessageRenderer';
+import { Logo } from '@/components/brand/Logo';
+import { ChatBubble } from '@/components/ui/chat-bubble';
+import { Textarea } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 interface ChatMessage {
   id: string;
@@ -143,8 +147,8 @@ export default function AgentChat({ onModuleUnlock }: AgentChatProps) {
       <div className="flex items-center justify-between px-3 py-4 border-b border-border">
         {!collapsed && (
           <div className="flex items-center gap-2">
-            <Bot size={16} className="text-primary" />
-            <span className="text-sm font-medium">Growth Agent</span>
+            <Logo variant="icon" size={16} className="text-primary" />
+            <span className="text-sm font-medium text-foreground">Growth Agent</span>
           </div>
         )}
         <button
@@ -164,7 +168,7 @@ export default function AgentChat({ onModuleUnlock }: AgentChatProps) {
           <div className="flex-1 overflow-y-auto p-3 space-y-3">
             {messages.length === 0 && (
               <div className="flex flex-col items-center justify-center h-full text-center px-4">
-                <Bot size={32} className="text-primary mb-3 opacity-60" />
+                <Logo variant="icon" size={32} className="text-primary opacity-60 mb-3" />
                 <p className="text-sm text-muted-foreground">
                   Olá! Sou seu Growth Agent.
                 </p>
@@ -174,23 +178,11 @@ export default function AgentChat({ onModuleUnlock }: AgentChatProps) {
               </div>
             )}
             {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={cn('flex', msg.role === 'user' ? 'justify-end' : 'justify-start')}
-              >
-                <div
-                  className={cn(
-                    'max-w-[85%] rounded-lg px-3 py-2 text-sm',
-                    msg.role === 'user'
-                      ? 'bg-primary text-white'
-                      : 'bg-surface-strong text-foreground'
-                  )}
-                >
-                  {msg.content.map((c, i) => (
-                    <MessageRenderer key={i} content={c} />
-                  ))}
-                </div>
-              </div>
+              <ChatBubble key={msg.id} role={msg.role}>
+                {msg.content.map((c, i) => (
+                  <MessageRenderer key={i} content={c} />
+                ))}
+              </ChatBubble>
             ))}
             <div ref={bottomRef} />
           </div>
@@ -198,8 +190,8 @@ export default function AgentChat({ onModuleUnlock }: AgentChatProps) {
           {/* Input */}
           <div className="p-3 border-t border-border">
             <div className="flex gap-2 items-end">
-              <textarea
-                className="flex-1 resize-none rounded-lg bg-surface-strong border border-border px-3 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors min-h-[36px] max-h-32"
+              <Textarea
+                className="min-h-[36px] max-h-32 py-2"
                 placeholder="Pergunte ao agente..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -211,13 +203,14 @@ export default function AgentChat({ onModuleUnlock }: AgentChatProps) {
                 }}
                 rows={1}
               />
-              <button
+              <Button
+                size="sm"
+                className="px-2.5 shrink-0"
                 onClick={sendMessage}
                 disabled={!input.trim() || streaming}
-                className="p-2 rounded-lg bg-primary text-white disabled:opacity-40 hover:opacity-90 transition-opacity"
               >
                 <Send size={14} />
-              </button>
+              </Button>
             </div>
           </div>
         </>

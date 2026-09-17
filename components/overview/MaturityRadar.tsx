@@ -8,7 +8,9 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts';
+import { Radar as RadarIcon } from 'lucide-react';
 import type { MaturityDimension } from '@/lib/agents/types';
+import { Button } from '@/components/ui/button';
 
 const DIMENSION_LABELS: Record<MaturityDimension, string> = {
   awareness_posicionamento: 'Awareness &\nPosicionamento',
@@ -51,17 +53,14 @@ export default function MaturityRadar({ scores, showCommunity = false }: Maturit
     return (
       <div className="flex flex-col items-center justify-center h-[360px] text-center">
         <div className="w-16 h-16 rounded-full bg-surface-strong flex items-center justify-center mb-4">
-          <span className="text-2xl">📊</span>
+          <RadarIcon size={26} className="text-muted-foreground" />
         </div>
         <p className="text-muted-foreground text-sm">
           Complete o diagnóstico para visualizar seu radar de maturidade
         </p>
-        <a
-          href="/onboarding"
-          className="mt-4 px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:opacity-90 transition-opacity"
-        >
-          Iniciar diagnóstico
-        </a>
+        <Button asChild className="mt-4">
+          <a href="/onboarding">Iniciar diagnóstico</a>
+        </Button>
       </div>
     );
   }
@@ -69,21 +68,21 @@ export default function MaturityRadar({ scores, showCommunity = false }: Maturit
   return (
     <ResponsiveContainer width="100%" height={360}>
       <RadarChart data={data} cx="50%" cy="50%" outerRadius="70%">
-        <PolarGrid stroke="var(--border)" />
+        <PolarGrid stroke="var(--color-border)" />
         <PolarAngleAxis
           dataKey="dimension"
           tick={{
-            fill: 'var(--muted-foreground)',
+            fill: 'var(--color-muted-foreground)',
             fontSize: 11,
             textAnchor: 'middle',
           }}
         />
         <Tooltip
           contentStyle={{
-            backgroundColor: 'var(--card)',
-            border: '1px solid var(--border)',
+            backgroundColor: 'var(--color-card)',
+            border: '1px solid var(--color-border)',
             borderRadius: '8px',
-            color: 'var(--foreground)',
+            color: 'var(--color-foreground)',
             fontSize: '12px',
           }}
           formatter={(value) => [`${(value as number).toFixed(1)} / 5.0`, 'Score']}
@@ -91,11 +90,11 @@ export default function MaturityRadar({ scores, showCommunity = false }: Maturit
         <Radar
           name="Maturidade"
           dataKey="score"
-          stroke="var(--primary)"
-          fill="var(--primary)"
+          stroke="var(--color-primary)"
+          fill="var(--color-primary)"
           fillOpacity={0.2}
           strokeWidth={2}
-          dot={{ fill: 'var(--primary)', r: 4 }}
+          dot={{ fill: 'var(--color-primary)', r: 4 }}
         />
       </RadarChart>
     </ResponsiveContainer>

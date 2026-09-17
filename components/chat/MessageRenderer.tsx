@@ -1,7 +1,7 @@
 'use client';
 
 import type { MessageContent } from '@/lib/agents/types';
-import { Unlock, TrendingUp, AlertCircle } from 'lucide-react';
+import { InsightCard } from '@/components/ui/insight-card';
 
 interface Props {
   content: MessageContent;
@@ -9,83 +9,76 @@ interface Props {
 
 export default function MessageRenderer({ content }: Props) {
   if (content.type === 'text') {
-    return (
-      <p className="whitespace-pre-wrap leading-relaxed">{content.text}</p>
-    );
+    return <p className="whitespace-pre-wrap leading-relaxed">{content.text}</p>;
   }
 
   if (content.type === 'module_unlock') {
     return (
-      <div className="flex items-start gap-2 p-2 rounded-md bg-primary/10 border border-primary/30 mt-1">
-        <Unlock size={14} className="text-primary mt-0.5 shrink-0" />
-        <div>
-          <p className="text-xs font-semibold text-primary uppercase tracking-wide">
-            Módulo Desbloqueado
-          </p>
-          <p className="text-sm mt-0.5">{content.message}</p>
-        </div>
-      </div>
+      <InsightCard
+        kind="module_unlock"
+        title="Módulo Desbloqueado"
+        body={content.message}
+        className="mt-1"
+      />
     );
   }
 
   if (content.type === 'insight') {
     return (
-      <div className="flex items-start gap-2 p-2 rounded-md bg-amber-500/10 border border-amber-500/30 mt-1">
-        <TrendingUp size={14} className="text-amber-400 mt-0.5 shrink-0" />
-        <div>
-          <p className="text-xs font-semibold text-amber-400 uppercase tracking-wide">
-            {content.title}
-          </p>
-          <p className="text-sm mt-0.5">{content.body}</p>
-          {content.score !== undefined && (
-            <p className="text-xs text-muted-foreground mt-1">
-              Score: {content.score.toFixed(1)}/5.0
-            </p>
-          )}
-        </div>
-      </div>
+      <InsightCard
+        kind="insight"
+        title={content.title}
+        body={content.body}
+        meta={content.score !== undefined ? `Score: ${content.score.toFixed(1)}/5.0` : undefined}
+        className="mt-1"
+      />
     );
   }
 
   if (content.type === 'research_progress') {
-    return (
-      <div className="flex items-center gap-2 p-2 rounded-md bg-muted mt-1">
-        <div
-          className={`w-2 h-2 rounded-full ${
-            content.status === 'running'
-              ? 'bg-blue-400 animate-pulse'
-              : content.status === 'done'
-              ? 'bg-green-400'
-              : 'bg-red-400'
-          }`}
+    // The underlying status carries three distinct states (running/done/
+    // error) that predate the 4-kind InsightCard family — mapped onto the
+    // closest kind so the color signal (blue-pulse/green/red) survives:
+    // still-running research keeps the dedicated research_progress kind
+    // (spinning icon), a finished lens reads as a positive insight, and a
+    // failed lens borrows action_request's danger accent (no actions).
+    if (content.status === 'done') {
+      return (
+        <InsightCard kind="insight" title={content.lens} body={content.summary ?? 'Concluído'} className="mt-1" />
+      );
+    }
+    if (content.status === 'error') {
+      return (
+        <InsightCard
+          kind="action_request"
+          title={`${content.lens} — falhou`}
+          body={content.summary}
+          className="mt-1"
         />
-        <span className="text-xs text-muted-foreground">
-          {content.lens}: {content.status === 'running' ? 'analisando...' : content.summary ?? content.status}
-        </span>
-      </div>
+      );
+    }
+    return (
+      <InsightCard kind="research_progress" title={content.lens} body="Analisando..." className="mt-1" />
     );
   }
 
   if (content.type === 'action_request') {
     return (
-      <div className="p-3 rounded-md bg-orange-500/10 border border-orange-500/30 mt-1">
-        <div className="flex items-center gap-2 mb-2">
-          <AlertCircle size={14} className="text-orange-400" />
-          <p className="text-xs font-semibold text-orange-400 uppercase tracking-wide">
-            Ação Requerida — {content.platform}
-          </p>
-        </div>
-        <p className="text-sm font-medium">{content.title}</p>
-        <p className="text-xs text-muted-foreground mt-1">{content.description}</p>
-        <div className="flex gap-2 mt-3">
-          <button className="px-3 py-1.5 rounded-md bg-primary text-white text-xs font-medium hover:opacity-90 transition-opacity">
-            Aprovar
-          </button>
-          <button className="px-3 py-1.5 rounded-md bg-muted text-muted-foreground text-xs hover:text-foreground transition-colors">
-            Rejeitar
-          </button>
-        </div>
-      </div>
+      <InsightCard
+        kind="action_request"
+        title={`Ação Requerida — ${content.platform}`}
+        body={
+          <>
+            <p className="font-medium text-foreground">{content.title}</p>
+            <p className="mt-1">{content.description}</p>
+          </>
+        }
+        actions={[
+          { label: 'Aprovar', onClick: () => {}, variant: 'primary' },
+          { label: 'Rejeitar', onClick: () => {}, variant: 'secondary' },
+        ]}
+        className="mt-1"
+      />
     );
   }
 

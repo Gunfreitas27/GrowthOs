@@ -16,6 +16,7 @@ const KIND_CONFIG: Record<InsightCardKind, { icon: LucideIcon; border: string; a
 export interface InsightCardAction {
   label: string;
   onClick: () => void;
+  variant?: 'primary' | 'secondary' | 'destructive';
 }
 
 export interface InsightCardProps {
@@ -47,12 +48,7 @@ function InsightCard({ kind, title, body, meta, progress, actions, className }: 
       {actions && actions.length > 0 && (
         <div className="mt-3 flex justify-end gap-2">
           {actions.map((action) => (
-            <Button
-              key={action.label}
-              size="sm"
-              variant={kind === 'action_request' ? 'destructive' : 'primary'}
-              onClick={action.onClick}
-            >
+            <Button key={action.label} size="sm" variant={action.variant ?? 'primary'} onClick={action.onClick}>
               {action.label}
             </Button>
           ))}

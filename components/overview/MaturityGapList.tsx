@@ -1,5 +1,7 @@
 import type { MaturityDimension } from '@/lib/agents/types';
 import { TrendingDown, TrendingUp } from 'lucide-react';
+import { ProgressBar } from '@/components/ui/progress-bar';
+import { cn } from '@/lib/utils';
 
 const LABELS: Record<MaturityDimension, string> = {
   awareness_posicionamento: 'Awareness & Posicionamento',
@@ -20,20 +22,17 @@ interface MaturityGapListProps {
   scores: Partial<Record<MaturityDimension, ScoreDetail>>;
 }
 
-function Row({ dim, detail, color }: { dim: MaturityDimension; detail: ScoreDetail; color: 'red' | 'green' }) {
+function Row({ dim, detail, tone }: { dim: MaturityDimension; detail: ScoreDetail; tone: 'danger' | 'success' }) {
   return (
-    <div className={color === 'red' ? 'border-l-2 border-red-400 pl-3' : 'border-l-2 border-green-400 pl-3'}>
+    <div className={cn('border-l-2 pl-3', tone === 'danger' ? 'border-danger' : 'border-success')}>
       <div className="flex items-center justify-between mb-1.5">
         <span className="text-sm font-medium text-foreground">{LABELS[dim]}</span>
         <span className="text-sm font-semibold text-foreground tabular-nums">
           {detail.score.toFixed(1)}
         </span>
       </div>
-      <div className="w-full h-1.5 rounded-full bg-surface-strong mb-2">
-        <div
-          className={color === 'red' ? 'h-full rounded-full bg-red-500 transition-all duration-700' : 'h-full rounded-full bg-green-500 transition-all duration-700'}
-          style={{ width: `${(detail.score / 5) * 100}%` }}
-        />
+      <div className="mb-2">
+        <ProgressBar value={detail.score} max={5} variant={tone} />
       </div>
       {detail.rationale && (
         <p className="text-xs text-muted-foreground leading-relaxed">{detail.rationale}</p>
@@ -54,24 +53,24 @@ export default function MaturityGapList({ scores }: MaturityGapListProps) {
     <div className="space-y-8">
       <div>
         <h3 className="text-xs uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-1.5">
-          <TrendingDown size={12} className="text-red-400" />
+          <TrendingDown size={12} className="text-danger" />
           Gaps Prioritários
         </h3>
         <div className="space-y-4">
           {gaps.map(([dim, detail]) => (
-            <Row key={dim} dim={dim} detail={detail} color="red" />
+            <Row key={dim} dim={dim} detail={detail} tone="danger" />
           ))}
         </div>
       </div>
 
       <div>
         <h3 className="text-xs uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-1.5">
-          <TrendingUp size={12} className="text-green-400" />
+          <TrendingUp size={12} className="text-success" />
           Maiores Forças
         </h3>
         <div className="space-y-4">
           {opportunities.map(([dim, detail]) => (
-            <Row key={dim} dim={dim} detail={detail} color="green" />
+            <Row key={dim} dim={dim} detail={detail} tone="success" />
           ))}
         </div>
       </div>
