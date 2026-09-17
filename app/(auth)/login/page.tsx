@@ -1,4 +1,5 @@
 import { signIn } from '@/auth';
+import { Logo } from '@/components/brand/Logo';
 
 function GoogleIcon() {
   return (
@@ -28,11 +29,8 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-surface-soft">
       <div className="w-full max-w-sm p-8 rounded-2xl border border-border bg-card">
         <div className="text-center mb-8">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center mx-auto mb-4">
-            <span className="text-white font-bold text-lg">F</span>
-          </div>
-          <h1 className="text-xl font-semibold">Flywell</h1>
-          <p className="text-sm text-muted-foreground mt-1">Growth Orchestrator Platform</p>
+          <Logo variant="full" size={32} className="justify-center mb-1" />
+          <p className="text-sm text-muted-foreground mt-2">Growth Orchestrator Platform</p>
         </div>
 
         <form

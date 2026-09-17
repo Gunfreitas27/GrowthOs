@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MODULE_KEYS, type ModuleKey } from '@/lib/agents/types';
+import { Logo } from '@/components/brand/Logo';
 
 interface ModuleState {
   moduleKey: string;
@@ -110,10 +111,10 @@ export default function Sidebar({ visibleModules, userEmail, signOutAction }: Si
     >
       {/* Logo */}
       <div className="flex items-center gap-2 px-4 py-5 border-b border-border">
-        <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
-          <Sparkles size={14} className="text-white" />
-        </div>
-        <span className="font-semibold text-sm tracking-wide">Flywell</span>
+        <Logo variant="icon" size={22} className="text-primary" />
+        <span className="font-display font-semibold text-base tracking-tight text-foreground">
+          Flywell
+        </span>
       </div>
 
       {/* Navigation */}
