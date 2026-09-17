@@ -131,23 +131,27 @@ export default async function BrandingPage() {
             </p>
           </div>
 
-          {/* Colors */}
-          <div className="rounded-xl border border-border bg-card p-5">
-            <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-3">
-              Paleta de Cores
-            </h2>
-            <div className="flex gap-2">
-              {(brand.colors as string[]).map((color) => (
-                <div key={color} className="flex flex-col items-center gap-1.5">
-                  <div
-                    className="w-10 h-10 rounded-lg border border-border"
-                    style={{ backgroundColor: color }}
-                  />
-                  <span className="text-[10px] text-muted-foreground">{color}</span>
-                </div>
-              ))}
+          {/* Colors — a fresh workspace has no brand_context row yet (empty
+              object from getBrandContext), so colors can be undefined until
+              brand research has run at least once. */}
+          {((brand.colors as string[] | undefined)?.length ?? 0) > 0 && (
+            <div className="rounded-xl border border-border bg-card p-5">
+              <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-3">
+                Paleta de Cores
+              </h2>
+              <div className="flex gap-2">
+                {(brand.colors as string[]).map((color) => (
+                  <div key={color} className="flex flex-col items-center gap-1.5">
+                    <div
+                      className="w-10 h-10 rounded-lg border border-border"
+                      style={{ backgroundColor: color }}
+                    />
+                    <span className="text-[10px] text-muted-foreground">{color}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Brandbook CTA */}
           <div className="rounded-xl border border-border border-dashed bg-card p-5 text-center">
