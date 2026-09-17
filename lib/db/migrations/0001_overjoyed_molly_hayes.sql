@@ -1,0 +1,1 @@
+ALTER TABLE "maturity_scores" ADD COLUMN "rationale" text;

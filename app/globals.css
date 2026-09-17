@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+/* Design system: Coinbase-inspired — white canvas + #0052ff blue + hairline borders */
+:root {
+  --background: #ffffff;
+  --foreground: #0a0b0d;
+  --card: #ffffff;
+  --card-foreground: #0a0b0d;
+  --border: #dee1e6;
+  --muted: #f7f7f7;
+  --muted-foreground: #5b616e;
+  --primary: #0052ff;
+  --primary-foreground: #ffffff;
+  --primary-active: #003ecc;
+  --accent: #0052ff;
+  --surface-soft: #f7f7f7;
+  --surface-strong: #eef0f3;
+  --sidebar-width: 240px;
+  --chat-width: 380px;
+}
