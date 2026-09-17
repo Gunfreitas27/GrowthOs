@@ -1,6 +1,7 @@
 import { Palette, BookOpen, Star, Mic, ExternalLink } from 'lucide-react';
 import { resolveBrandContext } from '@/lib/mock/resolver';
 import { getCurrentWorkspaceId } from '@/lib/workspace/current';
+import { ResearchLensCard } from '@/components/branding/ResearchLensCard';
 
 // Cor sólida por nível, opacidade decrescente para diferenciar as 6 camadas
 // da pirâmide sem sair da paleta do design system (antes: hues Tailwind
@@ -20,7 +21,9 @@ export default async function BrandingPage() {
   const brand = await resolveBrandContext(workspaceId) as Record<string, unknown>;
 
   const researchResults = brand.research_results as Record<string, unknown> | undefined;
-  const lenses = researchResults?.lenses as Record<string, { label: string; result: string }> | undefined;
+  const lenses = researchResults?.lenses as
+    | Record<string, { label: string; result: string | null; error?: string }>
+    | undefined;
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
@@ -88,10 +91,12 @@ export default async function BrandingPage() {
               </h2>
               <div className="space-y-4">
                 {Object.values(lenses).map((lens) => (
-                  <div key={lens.label}>
-                    <p className="text-xs font-semibold text-primary mb-1">{lens.label}</p>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{lens.result}</p>
-                  </div>
+                  <ResearchLensCard
+                    key={lens.label}
+                    label={lens.label}
+                    result={lens.result}
+                    error={lens.error}
+                  />
                 ))}
               </div>
               <p className="text-xs text-muted-foreground mt-4 border-t border-border pt-3">

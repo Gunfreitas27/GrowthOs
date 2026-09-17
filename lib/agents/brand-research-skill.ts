@@ -19,6 +19,25 @@ interface ResearchLens {
   error?: string;
 }
 
+// Every lens prompt appends this so the UI can show a distilled "aha
+// moment" first (headline + one metric + bullets) instead of the full
+// markdown report as the primary view — see parse-lens-summary.ts, which
+// extracts this block on read. Free-tier models won't always follow this
+// format; when they don't, the parser falls back to treating the whole
+// response as the full report, so nothing breaks — it just loses the
+// distilled summary for that one lens.
+const SUMMARY_FORMAT_INSTRUCTION = `
+IMPORTANTE — formato de resposta: comece sua resposta EXATAMENTE com este bloco, preenchendo os valores e mantendo os marcadores literais "Manchete:", "Métrica-chave:" e os hífens das bullets:
+
+## Resumo
+**Manchete:** <uma frase direta com o achado mais importante — o "e daí" para um gestor não-técnico, não um resumo genérico>
+**Métrica-chave:** <um número ou classificação central desta análise específica, ex: "DR estimado: 42" ou "Score competitivo: 2/5">
+- <achado concreto 1>
+- <achado concreto 2>
+- <achado concreto 3>
+
+Depois desse bloco, desenvolva a análise completa normalmente no restante da resposta.`;
+
 export async function runBrandResearch(
   input: BrandResearchInput,
   ctx: WorkspaceContext,
@@ -34,7 +53,8 @@ export async function runBrandResearch(
       task: `Analise a presença digital do site ${input.website}.
 Avalie métricas SEO: autoridade de domínio estimada, presença orgânica, palavras-chave potenciais, backlinks estimados.
 Use seu conhecimento sobre o setor ${input.businessContext.segment ?? 'não informado'} para contextualizar.
-Retorne análise estruturada em markdown.`,
+Retorne análise estruturada em markdown.
+${SUMMARY_FORMAT_INSTRUCTION}`,
     },
     ctx,
     MODELS.default
@@ -68,7 +88,8 @@ Aplique:
 3. Byron Sharp: Mental availability e physical availability
 4. Donald Miller: StoryBrand — a marca está comunicando clareza?
 
-Retorne análise estruturada em markdown com insights acionáveis.`,
+Retorne análise estruturada em markdown com insights acionáveis.
+${SUMMARY_FORMAT_INSTRUCTION}`,
     },
     ctx,
     MODELS.advanced
@@ -100,7 +121,8 @@ Aplique Peter Thiel (contrarian thinking): a empresa está criando monopólio ou
 Aplique Porter Five Forces: qual é a intensidade competitiva deste mercado?
 Qual é o moat (vantagem defensável) desta empresa?
 
-Retorne análise estruturada com score de vantagem competitiva (0–5).`,
+Retorne análise estruturada com score de vantagem competitiva (0–5).
+${SUMMARY_FORMAT_INSTRUCTION}`,
     },
     ctx,
     MODELS.advanced
@@ -138,7 +160,8 @@ Avalie cada nível do CBBE Pyramid:
 5. Brand Feelings (O que sinto por você?) — pontuação 0–5
 6. Brand Resonance (Qual é nossa conexão?) — pontuação 0–5
 
-Retorne análise estruturada em markdown + JSON com scores.`,
+Retorne análise estruturada em markdown + JSON com scores.
+${SUMMARY_FORMAT_INSTRUCTION}`,
     },
     ctx,
     MODELS.advanced
