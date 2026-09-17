@@ -15,7 +15,8 @@
     "mcp:dev": "tsx --env-file=.env.local mcp-server/src/stdio.ts",
     "seed:demo-workspace": "tsx --env-file=.env.local scripts/seed-demo-workspace.ts",
     "create-api-key": "tsx --env-file=.env.local scripts/create-api-key.ts",
-    "generate:brand": "tsx --env-file=.env.local scripts/generate-brand.ts"
+    "generate:brand": "tsx --env-file=.env.local scripts/generate-brand.ts",
+    "generate:design-system": "tsx --env-file=.env.local scripts/generate-design-system.ts"
   },
   "private": true,
   "dependencies": {
