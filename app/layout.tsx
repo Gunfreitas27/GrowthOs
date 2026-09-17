@@ -15,7 +15,7 @@ const bodyFont = Lora({
 });
 
 export const metadata: Metadata = {
-  title: 'Flywell — Growth Orchestrator',
+  title: 'Delfo — Growth Orchestrator',
   description: 'AI-powered growth orchestration platform',
 };
 

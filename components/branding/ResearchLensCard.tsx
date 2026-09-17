@@ -49,7 +49,7 @@ function ResearchLensCard({ label, result, error }: ResearchLensCardProps) {
   }
 
   return (
-    <div className="rounded-md border border-border p-4">
+    <div className="rounded-md bg-card shadow-elevated p-4">
       <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-2">{label}</p>
 
       {headline ? (

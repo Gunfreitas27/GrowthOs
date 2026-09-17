@@ -9,7 +9,7 @@ export function getOpenRouter(): OpenAI {
       apiKey: process.env.OPENROUTER_API_KEY ?? 'placeholder',
       defaultHeaders: {
         'HTTP-Referer': 'https://growthOS.app',
-        'X-Title': 'Flywell Growth Orchestrator',
+        'X-Title': 'Delfo Growth Orchestrator',
       },
     });
   }

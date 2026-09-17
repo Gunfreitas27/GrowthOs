@@ -23,7 +23,7 @@ const STRATEGY_PLAN = {
   },
   sprint1: {
     label: 'Mês 1 — Fundação de Analytics',
-    framework: 'Sean Ellis: métricas de PMF',
+    framework: 'Foco: métricas confiáveis',
     actions: [
       'Implementar UTMs em todos os canais ativos',
       'Configurar atribuição multi-touch no Google Analytics 4',
@@ -33,7 +33,7 @@ const STRATEGY_PLAN = {
   },
   sprint2: {
     label: 'Mês 2 — Aceleração Orgânica',
-    framework: 'Kaushik: See-Think-Do-Care',
+    framework: 'Foco: conteúdo de fundo de funil',
     actions: [
       'Audit técnico de SEO e corrigir top 10 issues',
       'Publicar 6 artigos de fundo de funil (intento transacional)',
@@ -43,7 +43,7 @@ const STRATEGY_PLAN = {
   },
   sprint3: {
     label: 'Mês 3 — Otimização de Conversão',
-    framework: 'Hormozi: CLOSER framework',
+    framework: 'Foco: otimização de fechamento',
     actions: [
       'Mapear objeções de vendas mais comuns e criar contra-argumentos',
       'Implementar follow-up automatizado em 5 touchpoints',
@@ -93,10 +93,10 @@ export default async function StrategyPage() {
         {[
           { label: 'Estágio', value: STRATEGY_PLAN.diagnosis.stage },
           { label: 'Gargalo', value: STRATEGY_PLAN.diagnosis.bottleneck },
-          { label: 'Estratégia Porter', value: STRATEGY_PLAN.diagnosis.genericStrategy },
+          { label: 'Abordagem competitiva', value: STRATEGY_PLAN.diagnosis.genericStrategy },
           { label: 'Budget', value: (bc as Record<string, unknown>).budget as string ?? 'R$20–100k' },
         ].map((item) => (
-          <div key={item.label} className="rounded-xl border border-border bg-card p-4">
+          <div key={item.label} className="rounded-xl bg-card shadow-elevated p-4">
             <p className="text-xs text-muted-foreground mb-1">{item.label}</p>
             <p className="text-sm font-semibold">{item.value}</p>
           </div>
@@ -104,13 +104,13 @@ export default async function StrategyPage() {
       </div>
 
       {/* Unfair Advantage */}
-      <div className="rounded-xl border border-primary/30 bg-primary/5 p-5 mb-6 flex items-start gap-3">
+      <div className="rounded-xl bg-primary/5 shadow-elevated p-5 mb-6 flex items-start gap-3">
         <Lightbulb size={18} className="text-primary mt-0.5 shrink-0" />
         <div>
           <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-1">Unfair Advantage</p>
           <p className="text-sm">{STRATEGY_PLAN.diagnosis.unfairAdvantage}</p>
           <p className="text-xs text-muted-foreground mt-1">
-            Identificado pelo advisory-board (Peter Thiel: contrarian competitive moat)
+            Identificado a partir do seu diagnóstico competitivo
           </p>
         </div>
       </div>
@@ -121,7 +121,7 @@ export default async function StrategyPage() {
       </h2>
       <div className="grid grid-cols-3 gap-4 mb-8">
         {[STRATEGY_PLAN.sprint1, STRATEGY_PLAN.sprint2, STRATEGY_PLAN.sprint3].map((sprint, i) => (
-          <div key={i} className="rounded-xl border border-border bg-card p-5">
+          <div key={i} className="rounded-xl bg-card shadow-elevated p-5">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-6 h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold shrink-0">
                 {i + 1}
@@ -145,7 +145,7 @@ export default async function StrategyPage() {
       <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground mb-4">
         Oportunidades Priorizadas por Impacto
       </h2>
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
+      <div className="rounded-xl bg-card shadow-elevated overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border">
@@ -162,7 +162,7 @@ export default async function StrategyPage() {
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
                     <div className="w-16 h-1.5 rounded-full bg-surface-strong">
-                      <div className="h-full rounded-full bg-red-400" style={{ width: `${(opp.score / 5) * 100}%` }} />
+                      <div className="h-full rounded-full bg-danger" style={{ width: `${(opp.score / 5) * 100}%` }} />
                     </div>
                     <span className="text-muted-foreground">{opp.score}</span>
                   </div>
@@ -171,8 +171,8 @@ export default async function StrategyPage() {
                 <td className="px-4 py-3">
                   <span className={`text-xs px-2 py-0.5 rounded-full ${
                     opp.roi === 'Alto'
-                      ? 'bg-green-50 text-green-700 border border-green-200'
-                      : 'bg-amber-50 text-amber-700 border border-amber-200'
+                      ? 'bg-success/10 text-success'
+                      : 'bg-warning/10 text-warning'
                   }`}>
                     {opp.roi}
                   </span>
@@ -184,7 +184,7 @@ export default async function StrategyPage() {
       </div>
 
       <p className="text-xs text-muted-foreground mt-4 text-center">
-        Estratégia gerada por <strong>advisory-board.skill</strong> (Dalio/Munger/Thiel) + <strong>hormozi-squad.skill</strong> (CLOSER framework, Core 4)
+        Estratégia gerada a partir do seu diagnóstico de maturidade
       </p>
     </div>
   );

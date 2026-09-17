@@ -1,7 +1,7 @@
 import { invokeSkillStream, WorkspaceContext } from '@/lib/skills/runner';
 import { MODELS } from '@/lib/openrouter';
 import { db, moduleStates } from '@/lib/db';
-import { type ModuleKey, type ModuleUnlockContent, type SSEChunk } from './types';
+import { MODULE_KEYS, type ModuleKey, type ModuleUnlockContent, type SSEChunk } from './types';
 import { and, eq } from 'drizzle-orm';
 
 // The orchestrator uses advisory-board (11 strategic advisors: Dalio, Munger, Thiel...)
@@ -82,10 +82,9 @@ export async function checkAndUnlockModules(
 ): Promise<ModuleKey[]> {
   if (!scores || Object.keys(scores).length === 0) return [];
 
-  const modulesToCheck: ModuleKey[] = ['strategy', 'branding', 'paid', 'seo', 'analytics'];
   const unlocked: ModuleKey[] = [];
 
-  for (const moduleKey of modulesToCheck) {
+  for (const moduleKey of MODULE_KEYS) {
     if (await shouldUnlockModule(workspaceId, moduleKey, scores)) {
       await unlockModule(workspaceId, moduleKey);
       unlocked.push(moduleKey);

@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
 // Simulated streaming response for mock mode
 async function* mockOrchestratorStream(userMessage: string) {
   const responses: Record<string, string> = {
-    default: `Com base no diagnóstico da **Flywell**, identifiquei os seguintes insights estratégicos:
+    default: `Com base no diagnóstico da **Delfo**, identifiquei os seguintes insights estratégicos:
 
 **Pontos fortes:**
 - Diferenciação Competitiva (3.8/5) — posicionamento único no mercado de growth tech
@@ -29,7 +29,7 @@ async function* mockOrchestratorStream(userMessage: string) {
 2. Implementar UTMs e atribuição cross-canal
 3. Testar novos ângulos de criativo no Google Ads
 
-Quer que eu elabore o plano de 90 dias? 📊`,
+Quer que eu elabore o plano de 90 dias?`,
   };
 
   const text = responses[userMessage.toLowerCase()] ?? responses.default;

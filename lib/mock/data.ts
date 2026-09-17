@@ -5,7 +5,7 @@ export const MOCK_WORKSPACE_ID = 'demo-workspace-id';
 export const MOCK_BUSINESS_CONTEXT = {
   segment: 'SaaS B2B para PMEs de varejo',
   stage: 'growth',
-  website: 'https://flywell.app',
+  website: 'https://delfo.com.br',
   tam_sam_som: 'TAM R$4B, SAM R$800M, SOM R$80M',
   icp: {
     biz_type: 'B2B',
@@ -36,14 +36,14 @@ export const MOCK_BUSINESS_CONTEXT = {
 
 export const MOCK_BRAND_CONTEXT = {
   brief:
-    'Flywell é a plataforma de growth marketing que substitui o achismo por dados verificados — diagnósticos ancorados em fontes externas reais (CNPJ, IBGE, PageSpeed, Wayback Machine) e squads de IA clonados de autoridades reais de branding e growth, não um chatbot genérico.',
+    'Delfo é a plataforma de growth marketing que substitui o achismo por dados verificados — diagnósticos ancorados em fontes externas reais (CNPJ, IBGE, PageSpeed, Wayback Machine) e squads de IA especializados por disciplina de branding e growth, não um chatbot genérico.',
   voice:
     'Profissional, direto e baseado em dados, sem jargões desnecessários, mas com autoridade analítica. Tom sóbrio e institucional — nunca flashy, sempre factual. Evita promessas mágicas ("IA mágica", "boost de 300%") e prefere números concretos e recomendações acionáveis.',
   archetype: 'Sábio + Criador',
   colors: ['#003e8a', '#0f172a', '#ffffff'],
-  tagline: 'Flywell — Growth com dados reais, não com intuição.',
+  tagline: 'Delfo — Growth com dados reais, não com intuição.',
   manifesto:
-    'A Flywell acredita que growth não é um jogo de adivinhação — é uma disciplina de evidência. No mundo saturado de promessas milagrosas e ferramentas fechadas que falam só consigo mesmas, construímos uma plataforma que substitui o achismo por dados verificados: cada insight é ancorado em fontes externas e contrastáveis — CNPJ, IBGE, PageSpeed Insights, Wayback Machine — e é entregue por squads de IA que encapsulam décadas de expertise real de branding, posicionamento e ciência de marketing. Não somos um chatbot genérico; somos uma consultoria estratégica em escala, projetada para o gestor não-técnico que precisa impressionar a diretoria com clareza, profundidade e credibilidade.\n\nNossa missão é democratizar o acesso a diagnósticos de qualidade de mercado para PMEs e mid-market brasileiras, que antes dependiam de agências caras ou de ferramentas que nunca saíram do ecossistema próprio. A Flywell é o motor que agentes chamam: uma arquitetura aberta, onde a lógica de negócio é exposta como serviço, permitindo que equipes explorem os mesmos dados verificados sem perder a humanidade da estratégia. Nosso produto é visualmente sóbrio, institucional e contido — porque a verdade que entregamos não precisa de efeitos especiais para causar impacto. A Flywell é growth com backing de dados, não de desculpas.',
+    'A Delfo acredita que growth não é um jogo de adivinhação — é uma disciplina de evidência. No mundo saturado de promessas milagrosas e ferramentas fechadas que falam só consigo mesmas, construímos uma plataforma que substitui o achismo por dados verificados: cada insight é ancorado em fontes externas e contrastáveis — CNPJ, IBGE, PageSpeed Insights, Wayback Machine — e é entregue por squads de IA que encapsulam décadas de expertise real de branding, posicionamento e ciência de marketing. Não somos um chatbot genérico; somos uma consultoria estratégica em escala, projetada para o gestor não-técnico que precisa impressionar a diretoria com clareza, profundidade e credibilidade.\n\nNossa missão é democratizar o acesso a diagnósticos de qualidade de mercado para PMEs e mid-market brasileiras, que antes dependiam de agências caras ou de ferramentas que nunca saíram do ecossistema próprio. A Delfo é o motor que agentes chamam: uma arquitetura aberta, onde a lógica de negócio é exposta como serviço, permitindo que equipes explorem os mesmos dados verificados sem perder a humanidade da estratégia. Nosso produto é visualmente sóbrio, institucional e contido — porque a verdade que entregamos não precisa de efeitos especiais para causar impacto. A Delfo é growth com backing de dados, não de desculpas.',
   brandbook_url: null,
   research_results: {
     lenses: {

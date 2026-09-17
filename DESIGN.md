@@ -7,17 +7,17 @@ supersedes: DESIGN.legacy-coinbase.md
 
 ## Audit do Sistema Atual (DESIGN.md)
 
-O documento atual `DESIGN.md` é um caso de texto substancialmente alheio à Flywell:
+O documento atual `DESIGN.md` é um caso de texto substancialmente alheio à Delfo:
 
 1. **Herança da Coinbase:** O sistema foi copiado integralmente da identidade visual da Coinbase (exchange cripto), uma marca de outra categoria e arquétipo completamente diferente (Herói vs Sábio+Criador).
-2. **Falta de alinhamento:** Não há conexão com o posicionamento da Flywell — substitui o achismo por dados verificados, arquétipo Sábio+Cririar, tom sóbrio e institucional.
-3. **Placeholder de marca:** O "logo" é um ícone genérico de *Sparkles* em uma caixa colorida — não há identidade visual da Flywell.
+2. **Falta de alinhamento:** Não há conexão com o posicionamento da Delfo — substitui o achismo por dados verificados, arquétipo Sábio+Cririar, tom sóbrio e institucional.
+3. **Placeholder de marca:** O "logo" é um ícone genérico de *Sparkles* em uma caixa colorida — não há identidade visual da Delfo.
 4. **Bug de token quebrado:** `MaturityGapList.tsx` usa Tailwind hardcoded (`border-red-400`, `bg-red-500`) em vez de tokens semânticos.
 5. **Componentes não compartilhados:** O mesmo recipe de card é reimplementado manualmente em 8+ lugares.
 6. **Tipografia fantasma:** A escala de tips está definida, mas nenhuma fonte real é carregada via `next/font` — o app cai no fallback do sistema.
-7. **Design genérico "de IA":** Todos os problemas listados no *Additional Context* apontam para um sistema herdado que transmite "cara de IA genérica" e não a autoridade analítica da Flywell.
+7. **Design genérico "de IA":** Todos os problemas listados no *Additional Context* apontam para um sistema herdado que transmite "cara de IA genérica" e não a autoridade analítica da Delfo.
 
-> **Decisão:** Não há extensão ou sobreposição. O sistema Coinbase será descartado e substituído pelo zero a partir da marca real da Flywell.
+> **Decisão:** Não há extensão ou sobreposição. O sistema Coinbase será descartado e substituído pelo zero a partir da marca real da Delfo.
 
 ---
 
@@ -25,13 +25,13 @@ O documento atual `DESIGN.md` é um caso de texto substancialmente alheio à Fly
 
 ### Decisão sobre a cor primária
 
-**Decisão: EVOLUIR para uma cor primária nova.** Embora `#0052ff` (blue Coinbase) já esteja em produção, mantê-lo carrega um risco grave: ele é a **identidade visual de uma marca concorrente direta** (exchange cripto) e transmite a "cara de IA genérica". A Flywell precisa estabelecer sua **própria voltagem visual** alinhada ao seu arquétipo Sábio+Criador.
+**Decisão: EVOLUIR para uma cor primária nova.** Embora `#0052ff` (blue Coinbase) já esteja em produção, mantê-lo carrega um risco grave: ele é a **identidade visual de uma marca concorrente direta** (exchange cripto) e transmite a "cara de IA genérica". A Delfo precisa estabelecer sua **própria voltagem visual** alinhada ao seu arquétipo Sábio+Criador.
 
 | Token | Hex | Uso | Justificativa |
 |-------|-----|-----|---------------|
-| `flywell-blue` | `#003e8a` | CTAs primários, wordmark, ícones-chave | Azul profundo evoca confiança e seriedade analítica. Mais sóbrio que o azul elétronico `#0052ff`, alinha-se ao tom institucional e comunica autoridade sem apelo emocional. |
-| `flywell-blue-hover` | `#002e66` | Hover em CTAs primários | Escurecimento sutil mantém a calma visual. |
-| `flywell-blue-active` | `#001f4d` | Estado ativo / foco | Mais escuro para pressão tátil. |
+| `delfo-blue` | `#003e8a` | CTAs primários, wordmark, ícones-chave | Azul profundo evoca confiança e seriedade analítica. Mais sóbrio que o azul elétronico `#0052ff`, alinha-se ao tom institucional e comunica autoridade sem apelo emocional. |
+| `delfo-blue-hover` | `#002e66` | Hover em CTAs primários | Escurecimento sutil mantém a calma visual. |
+| `delfo-blue-active` | `#001f4d` | Estado ativo / foco | Mais escuro para pressão tátil. |
 | `success` | `#0e8a5f` | Métricas positivas, status OK | Verde-musgo, sobrio, sem o vibrante do Tailwind padrão. |
 | `danger` | `#c83b4b` | Alertas, erros, métricas negativas | Vermelho-terroso, menos agressivo que `#cf202f`. |
 | `warning` | `#c68927` | Avisos, estados intermediários | Amarelo-terroso, alinhado à paleta institucional. |
@@ -96,29 +96,28 @@ O documento atual `DESIGN.md` é um caso de texto substancialmente alheio à Fly
 
 ### 1. Botão Primário
 
-- **Cor de fundo:** `flywell-blue` (`#003e8a`)
+- **Cor de fundo:** `delfo-blue` (`#003e8a`)
 - **Cor do texto:** `#ffffff`
 - **Tipografia:** `title-md` (Lora, 18px, 700)
 - **Padding:** `12px 20px`
 - **Raio de borda:** `radius-md` (8px)
-- **Hover:** `flywell-blue-hover` (`#002e66`)
-- **Active:** `flywell-blue-active` (`#001f4d`)
-- **Focus:** Anel de foco `2px` em `flywell-blue` com offset `2px` em `#ffffff`
+- **Hover:** `delfo-blue-hover` (`#002e66`)
+- **Active:** `delfo-blue-active` (`#001f4d`)
+- **Focus:** Anel de foco `2px` em `delfo-blue` com offset `2px` em `#ffffff`
 - **Loading:** Spinner interno + opacidade 0.7
 
 ### 2. Card
 
 - **Cor de fundo:** `#ffffff`
-- **Cor da borda:** `#e2e5eb` (hairline neutro)
-- **Borda:** `1px solid`
+- **Elevação:** sombra (`shadow-elevated`: `0 1px 2px rgba(15,23,42,0.05), 0 10px 24px -16px rgba(15,23,42,0.16)`) em vez de borda — profundidade real, não uma linha fina.
 - **Raio de borda:** `radius-lg` (12px)
 - **Padding:** `24px`
-- **Hover:** Levanta `4px` via `translateY(-4px)` + sombra sutil (`0 4px 12px rgba(0, 62, 138, 0.06)`)
+- **Hover:** Levanta `4px` via `translateY(-4px)` + sombra mais pronunciada
 
 ### 3. Badge
 
 - **Cor de fundo:** `#f0f3f8` (tint de azul muito claro)
-- **Cor do texto:** `flywell-blue` (`#003e8a`)
+- **Cor do texto:** `delfo-blue` (`#003e8a`)
 - **Tipografia:** `body-sm` (Lora, 13px, 400)
 - **Padding:** `4px 10px`
 - **Raio de borda:** `radius-pill`
@@ -137,7 +136,7 @@ O documento atual `DESIGN.md` é um caso de texto substancialmente alheio à Fly
 ### 5. Stepper (Onboarding)
 
 - **Indicador:** Círculo de `36px` com borda `2px solid #003e8a`
-- **Número:** `title-md` (Lora, 18px, 700) na cor `flywell-blue`
+- **Número:** `title-md` (Lora, 18px, 700) na cor `delfo-blue`
 - **Linha de conexão:** `2px` de altura, cor `#d1d5db`
 - **Estado ativo:** Preenchimento `#003e8a`, texto `#ffffff`
 - **Estado completo:** Preenchimento `#ffffff`, borda `#003e8a`
@@ -161,9 +160,9 @@ O documento atual `DESIGN.md` é um caso de texto substancialmente alheio à Fly
 Diferenciação **real** entre os 4 tipos, não apenas troca de matiz:
 
 #### Tipo 1: `module_unlock`
-- **Borda esquerda:** `4px solid flywell-blue` (`#003e8a`)
+- **Borda esquerda:** `4px solid delfo-blue` (`#003e8a`)
 - **Ícone:** Pequeno ícone *unlock* no canto superior direito
-- **Layout:** Título em `display-md`, cor `flywell-blue`
+- **Layout:** Título em `display-md`, cor `delfo-blue`
 - **Subtítulo:** `body-sm` em cinza (`#64748b`)
 - **Padding:** `20px`
 
@@ -192,8 +191,8 @@ Diferenciação **real** entre os 4 tipos, não apenas troca de matiz:
 
 ## Restrições Visuais
 
-| Restrição | Justificativa baseada na marca Flywell |
+| Restrição | Justificativa baseada na marca Delfo |
 |-----------|----------------------------------------|
-| **Sem dark mode** | A Flywell opera com autoridade institucional. O arquétipo Sábio valoriza clareza e legibilidade acima de estilização. Dark mode introduz complexidade de token que não é priorizada para um MVP focado em credibilidade analítica. |
-| **Sem gradiente** | Gradientes sugerem "magia" ou "transformação mágica" — conceitos que a Flywell rejeita ("growth não é jogo de adivinhação"). Azul sólido e bloco de cor comunicam seriedade e verificabilidade. |
-| **Sem sombra decorativa** | A Flywell é institucional. Sombra decorativa sugere "efeto especial", contradizendo o tom sóbrio e baseado em dados. Exceção: sombra no **hover do card**, para dar profundidade funcional (não estética) à interação — alinhado ao arquétipo Criador que "constrói experience com propósito". |
+| **Sem dark mode** | A Delfo opera com autoridade institucional. O arquétipo Sábio valoriza clareza e legibilidade acima de estilização. Dark mode introduz complexidade de token que não é priorizada para um MVP focado em credibilidade analítica. |
+| **Sem gradiente** | Gradientes sugerem "magia" ou "transformação mágica" — conceitos que a Delfo rejeita ("growth não é jogo de adivinhação"). Azul sólido e bloco de cor comunicam seriedade e verificabilidade. |
+| **Sem sombra decorativa** | A Delfo é institucional. Sombra decorativa sugere "efeto especial", contradizendo o tom sóbrio e baseado em dados. Exceção: sombra no **hover do card**, para dar profundidade funcional (não estética) à interação — alinhado ao arquétipo Criador que "constrói experience com propósito". |

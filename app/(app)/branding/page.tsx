@@ -58,7 +58,7 @@ export default async function BrandingPage() {
         <div className="col-span-2 space-y-5">
 
           {/* Brand Brief */}
-          <div className="rounded-xl border border-border bg-card p-5">
+          <div className="rounded-xl bg-card shadow-elevated p-5">
             <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-1.5">
               <Star size={12} /> Brand DNA
             </h2>
@@ -76,7 +76,7 @@ export default async function BrandingPage() {
           </div>
 
           {/* Brand Voice */}
-          <div className="rounded-xl border border-border bg-card p-5">
+          <div className="rounded-xl bg-card shadow-elevated p-5">
             <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-1.5">
               <Mic size={12} /> Brand Voice
             </h2>
@@ -85,7 +85,7 @@ export default async function BrandingPage() {
 
           {/* Brand Research Lenses */}
           {lenses && (
-            <div className="rounded-xl border border-border bg-card p-5">
+            <div className="rounded-xl bg-card shadow-elevated p-5">
               <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-4">
                 Diagnóstico de Inteligência de Marca
               </h2>
@@ -100,7 +100,7 @@ export default async function BrandingPage() {
                 ))}
               </div>
               <p className="text-xs text-muted-foreground mt-4 border-t border-border pt-3">
-                Pesquisa via <strong>brand-squad.skill</strong> (Keller CBBE nativo) + <strong>data-squad.skill</strong> + <strong>advisory-board.skill</strong> (Thiel competitive)
+                Pesquisa gerada a partir do seu diagnóstico de marca e mercado
               </p>
             </div>
           )}
@@ -110,9 +110,9 @@ export default async function BrandingPage() {
         <div className="space-y-5">
 
           {/* CBBE Pyramid */}
-          <div className="rounded-xl border border-border bg-card p-5">
+          <div className="rounded-xl bg-card shadow-elevated p-5">
             <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-4">
-              Keller CBBE Pyramid
+              Força de Marca
             </h2>
             <div className="space-y-2.5">
               {CBBE_SCORES.map((item) => (
@@ -132,7 +132,7 @@ export default async function BrandingPage() {
               ))}
             </div>
             <p className="text-[10px] text-muted-foreground mt-3">
-              Modelo Kevin Keller — nativo ao brand-squad.skill
+              Modelo CBBE de força de marca
             </p>
           </div>
 
@@ -140,7 +140,7 @@ export default async function BrandingPage() {
               object from getBrandContext), so colors can be undefined until
               brand research has run at least once. */}
           {((brand.colors as string[] | undefined)?.length ?? 0) > 0 && (
-            <div className="rounded-xl border border-border bg-card p-5">
+            <div className="rounded-xl bg-card shadow-elevated p-5">
               <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-3">
                 Paleta de Cores
               </h2>
@@ -162,13 +162,13 @@ export default async function BrandingPage() {
           <div className="rounded-xl border border-border border-dashed bg-card p-5 text-center">
             <BookOpen size={24} className="mx-auto mb-2 text-muted-foreground" />
             <p className="text-xs text-muted-foreground mb-3">
-              Brandbook completo via Canva + Figma ainda não gerado
+              Manual de marca completo ainda não gerado
             </p>
             <button className="w-full py-2 rounded-lg bg-primary text-white text-xs font-medium hover:opacity-90 transition-opacity">
               Gerar com IA
             </button>
             <p className="text-[10px] text-muted-foreground mt-2">
-              brand-squad + storytelling + Canva MCP + Figma MCP
+              Gerado a partir do seu diagnóstico de marca
             </p>
           </div>
         </div>

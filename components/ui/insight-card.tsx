@@ -6,11 +6,11 @@ import { Button } from './button';
 
 export type InsightCardKind = 'module_unlock' | 'insight' | 'research_progress' | 'action_request';
 
-const KIND_CONFIG: Record<InsightCardKind, { icon: LucideIcon; border: string; accent: string }> = {
-  module_unlock: { icon: Unlock, border: 'border-l-primary', accent: 'text-primary' },
-  insight: { icon: TrendingUp, border: 'border-l-success', accent: 'text-success' },
-  research_progress: { icon: Loader2, border: 'border-l-warning', accent: 'text-warning' },
-  action_request: { icon: AlertCircle, border: 'border-l-danger', accent: 'text-danger' },
+const KIND_CONFIG: Record<InsightCardKind, { icon: LucideIcon; accent: string }> = {
+  module_unlock: { icon: Unlock, accent: 'text-primary' },
+  insight: { icon: TrendingUp, accent: 'text-success' },
+  research_progress: { icon: Loader2, accent: 'text-warning' },
+  action_request: { icon: AlertCircle, accent: 'text-danger' },
 };
 
 export interface InsightCardAction {
@@ -30,9 +30,9 @@ export interface InsightCardProps {
 }
 
 function InsightCard({ kind, title, body, meta, progress, actions, className }: InsightCardProps) {
-  const { icon: Icon, border, accent } = KIND_CONFIG[kind];
+  const { icon: Icon, accent } = KIND_CONFIG[kind];
   return (
-    <div className={cn('relative rounded-md border border-border border-l-4 bg-card p-5', border, className)}>
+    <div className={cn('relative rounded-md bg-card shadow-elevated p-5', className)}>
       <Icon
         size={16}
         className={cn('absolute top-4 right-4', accent, kind === 'research_progress' && 'animate-spin')}

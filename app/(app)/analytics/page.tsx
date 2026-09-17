@@ -3,7 +3,7 @@ import { resolveMaturityScores } from '@/lib/mock/resolver';
 import type { MaturityDimension } from '@/lib/agents/types';
 import { getCurrentWorkspaceId } from '@/lib/workspace/current';
 
-// Mock analytics metrics (data-squad: Kaushik + Peter Fader + Sean Ellis)
+// Mock analytics metrics
 const MOCK_METRICS = {
   north_star: { label: 'MRR', value: 'R$ 84.200', change: '+12%', trend: 'up' },
   cac: { label: 'CAC Médio', value: 'R$ 820', change: '-5%', trend: 'down-good' },
@@ -64,26 +64,26 @@ export default async function AnalyticsPage() {
         <div>
           <h1 className="text-2xl font-semibold">Analytics & Atribuição</h1>
           <p className="text-sm text-muted-foreground">
-            Analisado por data-squad (Kaushik + Peter Fader + Sean Ellis)
+            Aquisição, retenção e receita — medidos, não estimados
           </p>
         </div>
         <div className="ml-auto flex items-center gap-2">
           <span className="text-xs text-muted-foreground">Score de maturidade</span>
-          <span className="text-sm font-bold text-amber-600">{analyticsScore.toFixed(1)}/5.0</span>
+          <span className="text-sm font-bold text-warning">{analyticsScore.toFixed(1)}/5.0</span>
         </div>
       </div>
 
       {/* North Star + KPIs */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         {/* North Star destacado */}
-        <div className="rounded-xl border border-primary/30 bg-primary/5 p-5">
+        <div className="rounded-xl bg-primary/5 shadow-elevated p-5">
           <p className="text-xs text-primary font-medium uppercase tracking-wide mb-1">
             North Star Metric
           </p>
           <p className="text-3xl font-bold">{MOCK_METRICS.north_star.value}</p>
           <div className="flex items-center gap-1.5 mt-1">
-            <TrendingUp size={12} className="text-green-600" />
-            <span className="text-xs text-green-600">{MOCK_METRICS.north_star.change} MoM</span>
+            <TrendingUp size={12} className="text-success" />
+            <span className="text-xs text-success">{MOCK_METRICS.north_star.change} MoM</span>
           </div>
           <p className="text-xs text-muted-foreground mt-2">{MOCK_METRICS.north_star.label}</p>
         </div>
@@ -92,22 +92,22 @@ export default async function AnalyticsPage() {
         <div className="col-span-2 grid grid-cols-3 gap-3">
           {[MOCK_METRICS.ltv_cac, MOCK_METRICS.churn, MOCK_METRICS.nrr,
             MOCK_METRICS.cac, MOCK_METRICS.ltv].map((m) => (
-            <div key={m.label} className="rounded-xl border border-border bg-card p-4">
+            <div key={m.label} className="rounded-xl bg-card shadow-elevated p-4">
               <p className="text-xs text-muted-foreground mb-1">{m.label}</p>
               <p className="text-xl font-bold">{m.value}</p>
               <div className="flex items-center gap-1 mt-0.5">
                 {m.trend === 'up' ? (
-                  <TrendingUp size={10} className="text-green-600" />
+                  <TrendingUp size={10} className="text-success" />
                 ) : m.trend === 'down-good' ? (
-                  <TrendingDown size={10} className="text-green-600" />
+                  <TrendingDown size={10} className="text-success" />
                 ) : m.trend === 'down-bad' ? (
-                  <TrendingDown size={10} className="text-red-600" />
+                  <TrendingDown size={10} className="text-danger" />
                 ) : (
                   <Minus size={10} className="text-muted-foreground" />
                 )}
                 <span className={`text-xs ${
-                  m.trend === 'up' || m.trend === 'down-good' ? 'text-green-600' :
-                  m.trend === 'down-bad' ? 'text-red-600' : 'text-muted-foreground'
+                  m.trend === 'up' || m.trend === 'down-good' ? 'text-success' :
+                  m.trend === 'down-bad' ? 'text-danger' : 'text-muted-foreground'
                 }`}>
                   {m.change}
                 </span>
@@ -120,7 +120,7 @@ export default async function AnalyticsPage() {
       {/* Funnel + Channels */}
       <div className="grid grid-cols-2 gap-6 mb-6">
         {/* Conversion Funnel */}
-        <div className="rounded-xl border border-border bg-card p-5">
+        <div className="rounded-xl bg-card shadow-elevated p-5">
           <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-4">
             Funil de Conversão (30d)
           </h2>
@@ -145,7 +145,7 @@ export default async function AnalyticsPage() {
         </div>
 
         {/* Channel Attribution */}
-        <div className="rounded-xl border border-border bg-card p-5">
+        <div className="rounded-xl bg-card shadow-elevated p-5">
           <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-4">
             Atribuição por Canal
           </h2>
@@ -165,33 +165,28 @@ export default async function AnalyticsPage() {
               </div>
             ))}
           </div>
-          <p className="text-[10px] text-muted-foreground mt-4">
-            Modelo See-Think-Do-Care (Avinash Kaushik) — data-squad.skill
-          </p>
         </div>
       </div>
 
       {/* AI Insights */}
       <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground mb-3">
-        Insights do data-squad
+        Insights
       </h2>
       <div className="space-y-3">
         {MOCK_INSIGHTS.map((insight, i) => (
           <div
             key={i}
-            className={`rounded-xl border p-4 flex items-start gap-3 ${
-              insight.type === 'gap'
-                ? 'border-red-200 bg-red-50'
-                : 'border-green-200 bg-green-50'
+            className={`rounded-xl shadow-elevated p-4 flex items-start gap-3 ${
+              insight.type === 'gap' ? 'bg-danger/5' : 'bg-success/5'
             }`}
           >
             {insight.type === 'gap' ? (
-              <AlertCircle size={15} className="text-red-600 mt-0.5 shrink-0" />
+              <AlertCircle size={15} className="text-danger mt-0.5 shrink-0" />
             ) : (
-              <TrendingUp size={15} className="text-green-600 mt-0.5 shrink-0" />
+              <TrendingUp size={15} className="text-success mt-0.5 shrink-0" />
             )}
             <div>
-              <p className={`text-sm font-semibold ${insight.type === 'gap' ? 'text-red-700' : 'text-green-700'}`}>
+              <p className={`text-sm font-semibold ${insight.type === 'gap' ? 'text-danger' : 'text-success'}`}>
                 {insight.title}
               </p>
               <p className="text-xs text-muted-foreground mt-0.5">{insight.body}</p>
@@ -201,7 +196,7 @@ export default async function AnalyticsPage() {
       </div>
 
       <p className="text-xs text-muted-foreground mt-6 text-center">
-        Análise gerada por <strong>data-squad.skill</strong> — Avinash Kaushik (See-Think-Do-Care) · Peter Fader (CLV) · Sean Ellis (Growth Metrics) · Nick Mehta (NRR)
+        Análise gerada a partir do seu diagnóstico de maturidade
       </p>
     </div>
   );

@@ -21,6 +21,7 @@ import { cn } from '@/lib/utils';
 import { MODULE_KEYS, type ModuleKey } from '@/lib/agents/types';
 import { Logo } from '@/components/brand/Logo';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { LOCKED_MODULE_META } from '@/lib/modules/config';
 
 interface ModuleState {
   moduleKey: string;
@@ -115,7 +116,7 @@ export default function Sidebar({ visibleModules, userEmail, signOutAction }: Si
         <div className="flex items-center gap-2 px-4 py-5 border-b border-border">
           <Logo variant="icon" size={22} className="text-primary" />
           <span className="font-display font-semibold text-base tracking-tight text-foreground">
-            Flywell
+            Delfo
           </span>
         </div>
 
@@ -157,17 +158,50 @@ export default function Sidebar({ visibleModules, userEmail, signOutAction }: Si
             const unlocked = unlockedKeys.has(key);
 
             if (!unlocked) {
+              // Modules with a generic locked-preview page (lib/modules/config.ts)
+              // are clickable — the agent explains what to do next there,
+              // instead of a dead end. Modules with their own real page
+              // (strategy/branding/analytics) keep the inert row: once
+              // unlocked they'll use their real href below, so there's no
+              // preview to send them to in the meantime.
+              const preview = LOCKED_MODULE_META[key];
+              if (!preview) {
+                return (
+                  <Tooltip key={key}>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm mb-0.5 text-muted-foreground opacity-45 cursor-default select-none">
+                        {item.icon}
+                        <span className="flex-1">{item.label}</span>
+                        <Lock size={12} />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      Desbloqueia conforme seu diagnóstico de maturidade avança
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              }
+
+              const previewActive = pathname === `/modules/${key}`;
               return (
                 <Tooltip key={key}>
                   <TooltipTrigger asChild>
-                    <div className="flex items-center gap-2.5 px-3 py-2 rounded-md text-sm mb-0.5 text-muted-foreground opacity-45 cursor-default select-none">
+                    <Link
+                      href={`/modules/${key}`}
+                      className={cn(
+                        'flex items-center gap-2.5 px-3 py-2 rounded-md text-sm mb-0.5 transition-colors',
+                        previewActive
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-muted-foreground opacity-60 hover:opacity-100 hover:text-foreground hover:bg-surface-strong'
+                      )}
+                    >
                       {item.icon}
                       <span className="flex-1">{item.label}</span>
                       <Lock size={12} />
-                    </div>
+                    </Link>
                   </TooltipTrigger>
                   <TooltipContent side="right">
-                    Desbloqueia conforme seu diagnóstico de maturidade avança
+                    Veja o que falta para desbloquear
                   </TooltipContent>
                 </Tooltip>
               );
