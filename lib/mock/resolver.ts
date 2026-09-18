@@ -37,6 +37,16 @@ export async function resolveBusinessContext(_workspaceId: string) {
   return getBusinessContext(_workspaceId);
 }
 
+export async function resolveConnections(_workspaceId: string) {
+  if (IS_MOCK) return [];
+  const { db, mcpConnections } = await import('@/lib/db');
+  const { eq } = await import('drizzle-orm');
+  return db.query.mcpConnections.findMany({
+    where: eq(mcpConnections.workspaceId, _workspaceId),
+    columns: { platform: true, status: true, lastSync: true },
+  });
+}
+
 export async function resolveApiKeys(_workspaceId: string) {
   if (IS_MOCK) return [];
   const { db, workspaceApiKeys } = await import('@/lib/db');
