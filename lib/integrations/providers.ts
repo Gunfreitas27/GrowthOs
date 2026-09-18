@@ -88,7 +88,10 @@ export const INTEGRATION_PROVIDERS: Record<string, IntegrationProvider> = {
 
 export function isProviderConfigured(id: string): boolean {
   const p = INTEGRATION_PROVIDERS[id];
-  return Boolean(p?.clientId && p?.clientSecret);
+  // Also gated on the token-encryption key existing — without it, a
+  // successful OAuth callback would crash trying to encrypt the token
+  // instead of storing the connection. See lib/integrations/token-crypto.ts.
+  return Boolean(p?.clientId && p?.clientSecret && process.env.INTEGRATIONS_ENCRYPTION_KEY);
 }
 
 export function getProvider(id: string): IntegrationProvider | undefined {
