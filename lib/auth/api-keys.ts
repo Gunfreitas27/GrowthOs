@@ -1,6 +1,6 @@
 import { randomBytes, createHash } from 'crypto';
 import { db, workspaceApiKeys } from '@/lib/db';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
 // API keys resolve a caller to a workspace server-side (this file), so a
 // tool/route never has to trust a client-supplied workspaceId — closing the
@@ -69,4 +69,17 @@ export async function resolveWorkspaceFromApiKey(
     .catch((err) => console.error('[api-keys] failed to update lastUsedAt:', err));
 
   return row.workspaceId;
+}
+
+// Scoped to workspaceId so one tenant can never revoke another's key by
+// guessing/enumerating ids — the UI only ever calls this with an id it just
+// listed for the caller's own workspace.
+export async function revokeWorkspaceApiKey(workspaceId: string, keyId: string): Promise<boolean> {
+  const result = await db
+    .update(workspaceApiKeys)
+    .set({ revokedAt: new Date() })
+    .where(and(eq(workspaceApiKeys.id, keyId), eq(workspaceApiKeys.workspaceId, workspaceId)))
+    .returning({ id: workspaceApiKeys.id });
+
+  return result.length > 0;
 }

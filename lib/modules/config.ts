@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import { TrendingUp, Search, Users, SendHorizontal, Zap, FolderKanban, Puzzle } from 'lucide-react';
+import { TrendingUp, Search, Users, SendHorizontal, Zap, FolderKanban } from 'lucide-react';
 import type { ModuleKey } from '@/lib/agents/types';
 
 export interface LockedModuleMeta {
@@ -10,9 +10,10 @@ export interface LockedModuleMeta {
 }
 
 // Modules with no real page built yet (strategy/branding/analytics have
-// their own route and never go through the generic locked-preview) — one
-// entry per module in this state, so the agent always has something
-// concrete to say about what unlocks it.
+// their own route and never go through the generic locked-preview;
+// integrations has its own real, always-unlocked route — see
+// components/layout/Sidebar.tsx) — one entry per module in this state, so
+// the agent always has something concrete to say about what unlocks it.
 export const LOCKED_MODULE_META: Partial<Record<ModuleKey, LockedModuleMeta>> = {
   paid: {
     label: 'Tráfego Pago',
@@ -55,13 +56,5 @@ export const LOCKED_MODULE_META: Partial<Record<ModuleKey, LockedModuleMeta>> = 
     icon: FolderKanban,
     agentMessage:
       'Preciso ver alguma iniciativa de growth já em andamento antes de organizar isso como projeto. Comece pela Estratégia — o plano de 90 dias vira sua primeira base aqui.',
-  },
-  integrations: {
-    label: 'Integrações',
-    description:
-      'Conecte suas próprias fontes de dados para enriquecer os diagnósticos com o contexto real do seu negócio.',
-    icon: Puzzle,
-    agentMessage:
-      'Esse é o módulo mais simples de desbloquear — qualquer dado de maturidade já conta. Deve estar quase pronto; se ainda não abriu, complete mais uma seção do diagnóstico.',
   },
 };

@@ -155,7 +155,11 @@ export default function Sidebar({ visibleModules, userEmail, signOutAction }: Si
           </div>
           {MODULE_KEYS.map((key) => {
             const item = MODULE_CONFIG[key];
-            const unlocked = unlockedKeys.has(key);
+            // Integrações connects external tools to whatever data already
+            // exists (or none) — it isn't a growth-strategy output like the
+            // other modules, so it doesn't make sense to gate it behind a
+            // maturity diagnostic the way the rest of the "Módulos" section is.
+            const unlocked = key === 'integrations' ? true : unlockedKeys.has(key);
 
             if (!unlocked) {
               // Modules with a generic locked-preview page (lib/modules/config.ts)

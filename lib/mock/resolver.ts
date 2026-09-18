@@ -37,6 +37,17 @@ export async function resolveBusinessContext(_workspaceId: string) {
   return getBusinessContext(_workspaceId);
 }
 
+export async function resolveApiKeys(_workspaceId: string) {
+  if (IS_MOCK) return [];
+  const { db, workspaceApiKeys } = await import('@/lib/db');
+  const { eq, isNull, and, desc } = await import('drizzle-orm');
+  return db.query.workspaceApiKeys.findMany({
+    where: and(eq(workspaceApiKeys.workspaceId, _workspaceId), isNull(workspaceApiKeys.revokedAt)),
+    orderBy: (t) => [desc(t.createdAt)],
+    columns: { id: true, name: true, keyPrefix: true, createdAt: true, lastUsedAt: true },
+  });
+}
+
 export async function resolveBrandContext(_workspaceId: string) {
   if (IS_MOCK) return MOCK_BRAND_CONTEXT;
   const { getBrandContext } = await import('@/lib/business-context/graph');
